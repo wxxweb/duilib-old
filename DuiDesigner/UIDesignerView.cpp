@@ -1106,6 +1106,8 @@ void CUIDesignerView::ShowPropertyDialog(CControlUI* pControl)
 		break;
 	case classActiveX:
 		break;
+	case classImport:
+		break;
 	case classContainer:
 		break;
 	case classVerticalLayout:

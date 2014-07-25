@@ -25,12 +25,18 @@ public:
 
     void GetLastErrorMessage(LPTSTR pstrMessage, SIZE_T cchMax) const;
     void GetLastErrorLocation(LPTSTR pstrSource, SIZE_T cchMax) const;
+
+	// 启用 "Import" 节点功能，用于导入外部 XML 文件 */
+	static void EnableImportNode(bool bEnable);
+
 private:
     CControlUI* _Parse(CMarkupNode* parent, CControlUI* pParent = NULL, CPaintManagerUI* pManager = NULL);
 
     CMarkup m_xml;
     IDialogBuilderCallback* m_pCallback;
     LPCTSTR m_pstrtype;
+
+	static bool sm_bEnableImportNode;
 };
 
 } // namespace DuiLib

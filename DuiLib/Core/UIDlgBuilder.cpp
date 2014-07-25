@@ -2,7 +2,11 @@
 
 namespace DuiLib {
 
-CDialogBuilder::CDialogBuilder() : m_pCallback(NULL), m_pstrtype(NULL)
+bool CDialogBuilder::sm_bEnableImportNode = false;
+
+CDialogBuilder::CDialogBuilder() 
+	: m_pCallback(NULL)
+	, m_pstrtype(NULL)
 {
 
 }
@@ -249,7 +253,24 @@ CControlUI* CDialogBuilder::_Parse(CMarkupNode* pRoot, CControlUI* pParent, CPai
             || _tcscmp(pstrClass, _T("Default")) == 0 ) continue;
 
         CControlUI* pControl = NULL;
-        if( _tcscmp(pstrClass, _T("Include")) == 0 ) {
+		if ( _tcscmp(pstrClass, _T("Import")) == 0 ) {
+			if ( false == node.HasAttributes() ) {
+				continue;
+			}
+			if ( sm_bEnableImportNode )
+			{
+				LPCTSTR pstrValue = node.GetAttributeValue(TEXT("text"));
+				if ( NULL == pstrValue ) {
+					continue;
+				}
+				CDialogBuilder builder;
+				pControl = builder.Create((LPCTSTR)pstrValue, NULL, NULL, pManager, NULL);
+			}
+			else {
+				pControl = new CImportUI;
+			}
+		}
+        else if( _tcscmp(pstrClass, _T("Include")) == 0 ) {
             if( !node.HasAttributes() ) continue;
             int count = 1;
             LPTSTR pstr = NULL;
@@ -293,8 +314,6 @@ CControlUI* CDialogBuilder::_Parse(CMarkupNode* pRoot, CControlUI* pParent, CPai
 
 			// 解析所有属性并覆盖默认属性
 			if( node.HasAttributes() ) {
-				TCHAR szValue[500] = { 0 };
-				SIZE_T cchLen = lengthof(szValue) - 1;
 				// Set ordinary attributes
 				int nAttributes = node.GetAttributeCount();
 				for( int i = 0; i < nAttributes; i++ ) {
@@ -443,8 +462,6 @@ CControlUI* CDialogBuilder::_Parse(CMarkupNode* pRoot, CControlUI* pParent, CPai
         }
         // Process attributes
         if( node.HasAttributes() ) {
-            TCHAR szValue[500] = { 0 };
-            SIZE_T cchLen = lengthof(szValue) - 1;
             // Set ordinary attributes
             int nAttributes = node.GetAttributeCount();
             for( int i = 0; i < nAttributes; i++ ) {
@@ -458,6 +475,11 @@ CControlUI* CDialogBuilder::_Parse(CMarkupNode* pRoot, CControlUI* pParent, CPai
         if( pReturn == NULL ) pReturn = pControl;
     }
     return pReturn;
+}
+
+void CDialogBuilder::EnableImportNode(bool bEnable)
+{
+	sm_bEnableImportNode = bEnable;
 }
 
 } // namespace DuiLib

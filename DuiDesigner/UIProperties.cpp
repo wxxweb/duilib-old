@@ -1176,6 +1176,20 @@ void CUIProperties::InitPropList()
 	m_wndPropList.AddProperty(pPropUI);
 #pragma endregion WebBrowser
 
+#pragma region Import
+	pPropUI=new CMFCPropertyGridProperty(_T("Import"),classImport);
+
+	//name
+	pProp=new CMFCPropertyGridProperty(_T("Name"),(_variant_t)_T(""),_T("控件的名称"),tagName);
+	pPropUI->AddSubItem(pProp);
+
+	//text
+	pProp=new CMFCPropertyGridProperty(_T("Text"),(_variant_t)_T(""),_T("导入的XML文件路径"),tagText);
+	pPropUI->AddSubItem(pProp);
+
+	m_wndPropList.AddProperty(pPropUI);
+#pragma endregion Import
+
 	HideAllProperties();
 }
 
@@ -1288,6 +1302,9 @@ void CUIProperties::ShowProperty(CControlUI* pControl)
 		break;
 	case classWebBrowser:
 		ShowWebBrowserPropery(pControl);
+		break;
+	case classImport:
+		ShowImportPropery(pControl);
 		break;
 	default:
 		ShowControlProperty(pControl);
@@ -2240,4 +2257,21 @@ void CUIProperties::ShowWebBrowserPropery( CControlUI* pControl )
 	pPropItem->GetSubItem(tagWebBrowserAutoNavi-tagWebBrowser)->SetOriginalValue((_variant_t)pWebBrowser->IsAutoNavigation());
 
 	pPropItem->Show(TRUE,FALSE);
+}
+
+void CUIProperties::ShowImportPropery(CControlUI* pControl)
+{
+	ASSERT(pControl);
+
+	CMFCPropertyGridProperty* pPropControl=m_wndPropList.FindItemByData(classImport,FALSE);
+	ASSERT(pPropControl);
+
+	//name
+	pPropControl->GetSubItem(tagName-tagControl)->SetValue((_variant_t)pControl->GetName());
+	pPropControl->GetSubItem(tagName-tagControl)->SetOriginalValue((_variant_t)pControl->GetName());
+	//text
+	pPropControl->GetSubItem(tagText-tagControl)->SetValue((_variant_t)pControl->GetText());
+	pPropControl->GetSubItem(tagText-tagControl)->SetOriginalValue((_variant_t)pControl->GetText());
+
+	pPropControl->Show(TRUE, FALSE);
 }

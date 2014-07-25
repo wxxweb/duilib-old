@@ -30,6 +30,7 @@ int gGetUIClass(LPCTSTR pstrClass)
 			if( _tcscmp(pstrClass, _T("ButtonUI")) == 0 )                 nClass=classButton;
 			else if( _tcscmp(pstrClass, _T("OptionUI")) == 0 )            nClass=classOption;
 			else if( _tcscmp(pstrClass, _T("SliderUI")) == 0 )            nClass=classSlider;
+			else if( _tcscmp(pstrClass, _T("ImportUI")) == 0 )            nClass=classImport;
 			break;
 		case 9:
 			if( _tcscmp(pstrClass, _T("ControlUI")) == 0 )                nClass=classControl;

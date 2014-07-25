@@ -750,6 +750,9 @@ CControlUI* CLayoutManager::NewUI(int nClass,CRect& rect,CControlUI* pParent, CL
 		pControl=new CScrollBarUI;
 		pExtended->nClass=classScrollBar;
 		break;
+	case classImport:
+		pControl=new CImportUI;
+		pExtended->nClass=classImport;
 	default:
 		delete pExtended;
 		return NULL;
@@ -1077,6 +1080,9 @@ CControlUI* CLayoutManager::CloneControl(CControlUI* pControl)
 			*(((CListUI*)pCopyControl)->GetHeader()) = *(copyList.GetHeader());
 			*((CVerticalLayoutUI*)((CListUI*)pCopyControl)->GetList()) = *static_cast<CVerticalLayoutUI*>(copyList.GetList());
 		}
+		break;
+	case classImport:
+		pCopyControl=new CImportUI(*static_cast<CImportUI*>(pControl->GetInterface(_T("Import"))));
 		break;
 	default:
 		pCopyControl = new CUserDefineUI(*static_cast<CUserDefineUI*>(pControl));
@@ -2285,6 +2291,9 @@ void CLayoutManager::SaveProperties(CControlUI* pControl, TiXmlElement* pParentN
 	case classWebBrowser:
 		SaveWebBrowserProperty(pControl,pNode);
 		break;
+	case classImport:
+		SaveImportProperty(pControl,pNode);
+		break;
 	default:
 		break;
 	}
@@ -2764,6 +2773,11 @@ void CLayoutManager::SaveWebBrowserProperty( CControlUI* pControl, TiXmlElement*
 	{
 		pNode->SetAttribute("homepage", StringConvertor::WideToUtf8(pWebBrowserUI->GetHomePage()));
 	}
+}
+
+void CLayoutManager::SaveImportProperty( CControlUI* pControl, TiXmlElement* pNode )
+{
+	SaveControlProperty(pControl, pNode);
 }
 
 CString CLayoutManager::m_strSkinDir=_T("");

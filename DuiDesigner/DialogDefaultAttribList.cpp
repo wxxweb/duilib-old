@@ -111,6 +111,9 @@ void CDialogDefaultAttribList::OnBnClickedButtonAttribAdd()
 	case ID_UI_CONTROL_ACTIVEX:
 		nClass = classActiveX;
 		break;
+	case ID_UI_CONTROL_IMPORT:
+		nClass = classImport;
+		break;
 	case ID_UI_LAYOUT_VERTICAL:
 		nClass = classVerticalLayout;
 		break;

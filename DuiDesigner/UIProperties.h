@@ -332,6 +332,7 @@ protected:
 	void ShowTabLayoutPropery(CControlUI* pControl);
 	void ShowListHeaderItemPropery(CControlUI* pControl);
 	void ShowWebBrowserPropery(CControlUI* pControl);
+	void ShowImportPropery(CControlUI* pControl);
 
 	//Container Property
 	void ShowContainerProperty(CControlUI* pControl);
