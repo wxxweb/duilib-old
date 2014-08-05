@@ -161,6 +161,7 @@ enum PropertyTag
 	tagOption,
 	tagOptForeImage=tagOption,
 	tagSelectedImage,
+	tagSelectedHotImage,
 	tagSelected,
 	tagGroup,
 

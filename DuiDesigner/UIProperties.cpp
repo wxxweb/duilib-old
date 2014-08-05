@@ -723,6 +723,10 @@ void CUIProperties::InitPropList()
 	pPropImage->AllowEdit(FALSE);
 	pPropUI->AddSubItem(pPropImage);
 
+	pPropImage=new CMFCPropertyGridImageProperty(_T("SelectedHotImage"),_T(""),_T("指定复选框被选择后获得热点时的图片"),tagSelectedHotImage);//selectedhotimage
+	pPropImage->AllowEdit(FALSE);
+	pPropUI->AddSubItem(pPropImage);
+
 	pProp=new CMFCPropertyGridProperty(_T("Selected"),(_variant_t)false,_T("指示是否已被选中"),tagSelected);//selected
 	pPropUI->AddSubItem(pProp);
 
@@ -1675,6 +1679,11 @@ void CUIProperties::ShowOptionProperty(CControlUI* pControl)
 	//selectedimage
 	pPropOption->GetSubItem(tagSelectedImage-tagOption)->SetValue((_variant_t)pOption->GetSelectedImage());
 	pPropOption->GetSubItem(tagSelectedImage-tagOption)->SetOriginalValue((_variant_t)pOption->GetSelectedImage());
+	
+	//selectedhotimage
+	pPropOption->GetSubItem(tagSelectedHotImage-tagOption)->SetValue((_variant_t)pOption->GetSelectedHotImage());
+	pPropOption->GetSubItem(tagSelectedHotImage-tagOption)->SetOriginalValue((_variant_t)pOption->GetSelectedHotImage());
+
 	//selected
 	pPropOption->GetSubItem(tagSelected-tagOption)->SetValue((_variant_t)pOption->IsSelected());
 	pPropOption->GetSubItem(tagSelected-tagOption)->SetOriginalValue((_variant_t)pOption->IsSelected());

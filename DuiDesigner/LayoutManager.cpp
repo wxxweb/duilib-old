@@ -1818,6 +1818,9 @@ void CLayoutManager::SaveOptionProperty(CControlUI* pControl, TiXmlElement* pNod
 
 	if(pOptionUI->GetSelectedImage() && _tcslen(pOptionUI->GetSelectedImage()) > 0)
 		pNode->SetAttribute("selectedimage", StringConvertor::WideToUtf8(ConvertImageFileName(pOptionUI->GetSelectedImage())));
+
+	if(pOptionUI->GetSelectedHotImage() && _tcslen(pOptionUI->GetSelectedHotImage()) > 0)
+		pNode->SetAttribute("selectedhotimage", StringConvertor::WideToUtf8(ConvertImageFileName(pOptionUI->GetSelectedHotImage())));
 }
 
 void CLayoutManager::SaveProgressProperty(CControlUI* pControl, TiXmlElement* pNode)
@@ -2776,6 +2779,11 @@ void CLayoutManager::SaveWebBrowserProperty( CControlUI* pControl, TiXmlElement*
 }
 
 void CLayoutManager::SaveImportProperty( CControlUI* pControl, TiXmlElement* pNode )
+{
+	SaveControlProperty(pControl, pNode);
+}
+
+void CLayoutManager::SaveCheckBoxProperty(CControlUI* pControl, TiXmlElement* pNode)
 {
 	SaveControlProperty(pControl, pNode);
 }
