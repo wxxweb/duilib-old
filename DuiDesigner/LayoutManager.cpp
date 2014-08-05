@@ -2785,7 +2785,7 @@ void CLayoutManager::SaveImportProperty( CControlUI* pControl, TiXmlElement* pNo
 
 void CLayoutManager::SaveCheckBoxProperty(CControlUI* pControl, TiXmlElement* pNode)
 {
-	SaveControlProperty(pControl, pNode);
+	SaveOptionProperty(pControl, pNode);
 }
 
 CString CLayoutManager::m_strSkinDir=_T("");

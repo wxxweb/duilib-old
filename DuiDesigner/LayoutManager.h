@@ -190,6 +190,7 @@ protected:
 	static void SaveChildWindowProperty(CControlUI* pControl, TiXmlElement* pNode);
 	static void SaveWebBrowserProperty(CControlUI* pControl, TiXmlElement* pNode);
 	static void SaveImportProperty(CControlUI* pControl, TiXmlElement* pNode);
+	static void SaveCheckBoxProperty(CControlUI* pControl, TiXmlElement* pNode);
 
 	static CString ConvertImageFileName(LPCTSTR pstrImageAttrib);
 
