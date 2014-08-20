@@ -29,7 +29,7 @@ namespace DuiLib
 		DWORD GetSelectedTextColor();
 
 		void SetSelectedBkColor(DWORD dwBkColor);
-		DWORD GetSelectBkColor();
+		DWORD GetSelectedBkColor();
 
 		LPCTSTR GetForeImage();
 		void SetForeImage(LPCTSTR pStrImage);

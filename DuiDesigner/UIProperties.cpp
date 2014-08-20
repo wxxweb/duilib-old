@@ -727,6 +727,16 @@ void CUIProperties::InitPropList()
 	pPropImage->AllowEdit(FALSE);
 	pPropUI->AddSubItem(pPropImage);
 
+	pPropColor=new CMFCPropertyGridColor32Property(_T("SelectedBkColor"),(LONG)ARGB(0,0,0,0),NULL,_T("指定复选框被选择后的背景颜色"),tagSelectedBkColor);//selectedbkcolor
+	pPropColor->EnableOtherButton(_T("其他..."));
+	pPropColor->EnableAutomaticButton(_T("默认"),::GetSysColor(COLOR_3DFACE));
+	pPropUI->AddSubItem(pPropColor);
+
+	pPropColor=new CMFCPropertyGridColor32Property(_T("SelectedTextColor"),(LONG)ARGB(0,0,0,0),NULL,_T("指定复选框被选择后文本的颜色"),tagSelectedTextColor);//selectedtextcolor
+	pPropColor->EnableOtherButton(_T("其他..."));
+	pPropColor->EnableAutomaticButton(_T("默认"),::GetSysColor(COLOR_3DFACE));
+	pPropUI->AddSubItem(pPropColor);
+
 	pProp=new CMFCPropertyGridProperty(_T("Selected"),(_variant_t)false,_T("指示是否已被选中"),tagSelected);//selected
 	pPropUI->AddSubItem(pProp);
 
@@ -1683,6 +1693,14 @@ void CUIProperties::ShowOptionProperty(CControlUI* pControl)
 	//selectedhotimage
 	pPropOption->GetSubItem(tagSelectedHotImage-tagOption)->SetValue((_variant_t)pOption->GetSelectedHotImage());
 	pPropOption->GetSubItem(tagSelectedHotImage-tagOption)->SetOriginalValue((_variant_t)pOption->GetSelectedHotImage());
+
+	//selectedbkcolor
+	pPropOption->GetSubItem(tagSelectedBkColor-tagOption)->SetValue((_variant_t)pOption->GetSelectedBkColor());
+	pPropOption->GetSubItem(tagSelectedBkColor-tagOption)->SetOriginalValue((_variant_t)pOption->GetSelectedBkColor());
+
+	//selectedtextcolor
+	pPropOption->GetSubItem(tagSelectedTextColor-tagOption)->SetValue((_variant_t)pOption->GetSelectedTextColor());
+	pPropOption->GetSubItem(tagSelectedTextColor-tagOption)->SetOriginalValue((_variant_t)pOption->GetSelectedTextColor());
 
 	//selected
 	pPropOption->GetSubItem(tagSelected-tagOption)->SetValue((_variant_t)pOption->IsSelected());

@@ -1782,14 +1782,14 @@ void CLayoutManager::SaveButtonProperty(CControlUI* pControl, TiXmlElement* pNod
 
 	if(pButtonUI->GetPushedTextColor() != 0)
 	{
-		DWORD dwColor = pButtonUI->GetPushedTextColor();					
+		DWORD dwColor = pButtonUI->GetPushedTextColor();
 		_stprintf_s(szBuf, _T("#%02X%02X%02X%02X"), HIBYTE(HIWORD(dwColor)), static_cast<BYTE>(GetBValue(dwColor)), static_cast<BYTE>(GetGValue(dwColor)), static_cast<BYTE>(GetRValue(dwColor)));
 		pNode->SetAttribute("pushedtextcolor", StringConvertor::WideToUtf8(szBuf));
 	}
 
 	if(pButtonUI->GetHotTextColor() != 0)
 	{
-		DWORD dwColor = pButtonUI->GetHotTextColor();					
+		DWORD dwColor = pButtonUI->GetHotTextColor();
 		_stprintf_s(szBuf, _T("#%02X%02X%02X%02X"), HIBYTE(HIWORD(dwColor)), static_cast<BYTE>(GetBValue(dwColor)), static_cast<BYTE>(GetGValue(dwColor)), static_cast<BYTE>(GetRValue(dwColor)));
 		pNode->SetAttribute("hottextcolor", StringConvertor::WideToUtf8(szBuf));
 	}
@@ -1821,6 +1821,20 @@ void CLayoutManager::SaveOptionProperty(CControlUI* pControl, TiXmlElement* pNod
 
 	if(pOptionUI->GetSelectedHotImage() && _tcslen(pOptionUI->GetSelectedHotImage()) > 0)
 		pNode->SetAttribute("selectedhotimage", StringConvertor::WideToUtf8(ConvertImageFileName(pOptionUI->GetSelectedHotImage())));
+
+	if(pOptionUI->GetSelectedBkColor() != 0)
+	{
+		DWORD dwColor = pOptionUI->GetSelectedBkColor();
+		_stprintf_s(szBuf, _T("#%02X%02X%02X%02X"), HIBYTE(HIWORD(dwColor)), static_cast<BYTE>(GetBValue(dwColor)), static_cast<BYTE>(GetGValue(dwColor)), static_cast<BYTE>(GetRValue(dwColor)));
+		pNode->SetAttribute("selectedbkcolor", StringConvertor::WideToUtf8(szBuf));
+	}
+
+	if(pOptionUI->GetSelectedTextColor() != 0)
+	{
+		DWORD dwColor = pOptionUI->GetSelectedTextColor();
+		_stprintf_s(szBuf, _T("#%02X%02X%02X%02X"), HIBYTE(HIWORD(dwColor)), static_cast<BYTE>(GetBValue(dwColor)), static_cast<BYTE>(GetGValue(dwColor)), static_cast<BYTE>(GetRValue(dwColor)));
+		pNode->SetAttribute("selectedtextcolor", StringConvertor::WideToUtf8(szBuf));
+	}
 }
 
 void CLayoutManager::SaveProgressProperty(CControlUI* pControl, TiXmlElement* pNode)

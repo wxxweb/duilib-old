@@ -154,7 +154,6 @@ namespace DuiLib
 
 	DWORD COptionUI::GetSelectedTextColor()
 	{
-		if (m_dwSelectedTextColor == 0) m_dwSelectedTextColor = m_pManager->GetDefaultFontColor();
 		return m_dwSelectedTextColor;
 	}
 
@@ -180,7 +179,7 @@ namespace DuiLib
 	// Qualifier:
 	// Note:	  
 	//************************************
-	DWORD COptionUI::GetSelectBkColor()
+	DWORD COptionUI::GetSelectedBkColor()
 	{
 		return m_dwSelectedBkColor;
 	}
