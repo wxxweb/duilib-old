@@ -29,8 +29,7 @@ LRESULT WindowImplBase::ResponseDefaultKeyEvent(WPARAM wParam)
 	}
 	else if (wParam == VK_ESCAPE)
 	{
-		Close();
-		return TRUE;
+		return FALSE;
 	}
 
 	return FALSE;
@@ -161,6 +160,7 @@ LRESULT WindowImplBase::OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 	}
 
 	RECT rcCaption = m_PaintManager.GetCaptionRect();
+
 	if( pt.x >= rcClient.left + rcCaption.left && pt.x < rcClient.right - rcCaption.right \
 		&& pt.y >= rcCaption.top && pt.y < rcCaption.bottom ) {
 			CControlUI* pControl = static_cast<CControlUI*>(m_PaintManager.FindControl(pt));
@@ -269,8 +269,12 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	m_PaintManager.AddPreMessageFilter(this);
 
 	CDialogBuilder builder;
-	CDuiString strResourcePath=m_PaintManager.GetCurrentPath();
-	strResourcePath+=GetSkinFolder().GetData();
+    CDuiString strResourcePath=m_PaintManager.GetResourcePath();
+    if (strResourcePath.IsEmpty())
+    {
+        strResourcePath=m_PaintManager.GetInstancePath();
+        strResourcePath+=GetSkinFolder().GetData();
+    }
 	m_PaintManager.SetResourcePath(strResourcePath.GetData());
 
 	switch(GetResourceType())
@@ -420,35 +424,14 @@ LONG WindowImplBase::GetStyle()
 	return styleValue;
 }
 
-void WindowImplBase::OnClick(TNotifyUI& msg)
-{
-	CDuiString sCtrlName = msg.pSender->GetName();
-	if( sCtrlName == _T("closebtn") )
-	{
-		Close();
-		return; 
-	}
-	else if( sCtrlName == _T("minbtn"))
-	{ 
-		SendMessage(WM_SYSCOMMAND, SC_MINIMIZE, 0); 
-		return; 
-	}
-	else if( sCtrlName == _T("maxbtn"))
-	{ 
-		SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE, 0); 
-		return; 
-	}
-	else if( sCtrlName == _T("restorebtn"))
-	{ 
-		SendMessage(WM_SYSCOMMAND, SC_RESTORE, 0); 
-		return; 
-	}
-	return;
-}
-
 void WindowImplBase::Notify(TNotifyUI& msg)
 {
 	return CNotifyPump::NotifyPump(msg);
+}
+
+void WindowImplBase::OnClick(DuiLib::TNotifyUI& msg)
+{
+
 }
 
 }
