@@ -44,7 +44,7 @@ namespace DuiLib
 		static HRESULT SetProperty(IDispatch *pObj, LPOLESTR pName, VARIANT *pValue);
 
 	protected:
-		IWebBrowser2*			m_pWebBrowser2; //ä¯ÀÀÆ÷Ö¸Õë
+		IWebBrowser2*		m_pWebBrowser2; //ä¯ÀÀÆ÷Ö¸Õë
 		IHTMLWindow2*		_pHtmlWnd2;
 		LONG m_dwRef;
 		DWORD m_dwCookie;

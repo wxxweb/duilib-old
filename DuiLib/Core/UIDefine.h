@@ -15,7 +15,7 @@ enum DuiSig
 class CControlUI;
 
 // Structure for notifications to the outside world
-typedef struct tagTNotifyUI 
+struct TNotifyUI 
 {
 	CDuiString sType;
 	CDuiString sVirtualWnd;
@@ -24,7 +24,7 @@ typedef struct tagTNotifyUI
 	POINT ptMouse;
 	WPARAM wParam;
 	LPARAM lParam;
-} TNotifyUI;
+};
 
 class CNotifyPump;
 typedef void (CNotifyPump::*DUI_PMSG)(TNotifyUI& msg);  //指针类型
@@ -44,6 +44,7 @@ union DuiMessageMapFunctions
 
 #define DUI_MSGTYPE_TIMER                  (_T("timer"))
 #define DUI_MSGTYPE_CLICK                  (_T("click"))
+#define DUI_MSGTYPE_DBCLICK                (_T("dbclick"))
 
 #define DUI_MSGTYPE_RETURN                 (_T("return"))
 #define DUI_MSGTYPE_SCROLL                 (_T("scroll"))
@@ -102,19 +103,19 @@ struct DUI_MSGMAP_ENTRY //定义一个结构体，来存放消息信息
 #ifndef UILIB_STATIC
 #define DUI_DECLARE_MESSAGE_MAP()                                         \
 private:                                                                  \
-	static const DUI_MSGMAP_ENTRY _messageEntries[];                      \
+	static const DuiLib::DUI_MSGMAP_ENTRY _messageEntries[];              \
 protected:                                                                \
-	static const DUI_MSGMAP messageMap;                                   \
-	static const DUI_MSGMAP* PASCAL _GetBaseMessageMap();                 \
-	virtual const DUI_MSGMAP* GetMessageMap() const;                      \
+	static const DuiLib::DUI_MSGMAP messageMap;                           \
+	static const DuiLib::DUI_MSGMAP* PASCAL _GetBaseMessageMap();         \
+	virtual const DuiLib::DUI_MSGMAP* GetMessageMap() const;              \
 
 #else
 #define DUI_DECLARE_MESSAGE_MAP()                                         \
 private:                                                                  \
-	static const DUI_MSGMAP_ENTRY _messageEntries[];                      \
+	static const DuiLib::DUI_MSGMAP_ENTRY _messageEntries[];              \
 protected:                                                                \
-	static  const DUI_MSGMAP messageMap;				                  \
-	virtual const DUI_MSGMAP* GetMessageMap() const;                      \
+	static  const DuiLib::DUI_MSGMAP messageMap;				          \
+	virtual const DuiLib::DUI_MSGMAP* GetMessageMap() const;              \
 
 #endif
 
@@ -122,22 +123,22 @@ protected:                                                                \
 //基类声明开始
 #ifndef UILIB_STATIC
 #define DUI_BASE_BEGIN_MESSAGE_MAP(theClass)                              \
-	const DUI_MSGMAP* PASCAL theClass::_GetBaseMessageMap()               \
+	const DuiLib::DUI_MSGMAP* PASCAL theClass::_GetBaseMessageMap()       \
 		{ return NULL; }                                                  \
-	const DUI_MSGMAP* theClass::GetMessageMap() const                     \
+	const DuiLib::DUI_MSGMAP* theClass::GetMessageMap() const             \
 		{ return &theClass::messageMap; }                                 \
-	UILIB_COMDAT const DUI_MSGMAP theClass::messageMap =                  \
+	UILIB_COMDAT const DuiLib::DUI_MSGMAP theClass::messageMap =          \
 		{  &theClass::_GetBaseMessageMap, &theClass::_messageEntries[0] };\
-	UILIB_COMDAT const DUI_MSGMAP_ENTRY theClass::_messageEntries[] =     \
+	UILIB_COMDAT const DuiLib::DUI_MSGMAP_ENTRY theClass::_messageEntries[] =  \
 	{                                                                     \
 
 #else
 #define DUI_BASE_BEGIN_MESSAGE_MAP(theClass)                              \
-	const DUI_MSGMAP* theClass::GetMessageMap() const                     \
+	const DuiLib::DUI_MSGMAP* theClass::GetMessageMap() const             \
 		{ return &theClass::messageMap; }                                 \
-	UILIB_COMDAT const DUI_MSGMAP theClass::messageMap =                  \
+	UILIB_COMDAT const DuiLib::DUI_MSGMAP theClass::messageMap =          \
 		{  NULL, &theClass::_messageEntries[0] };                         \
-	UILIB_COMDAT const DUI_MSGMAP_ENTRY theClass::_messageEntries[] =     \
+	UILIB_COMDAT const DuiLib::DUI_MSGMAP_ENTRY theClass::_messageEntries[] =     \
 	{                                                                     \
 
 #endif
@@ -146,22 +147,22 @@ protected:                                                                \
 //子类声明开始
 #ifndef UILIB_STATIC
 #define DUI_BEGIN_MESSAGE_MAP(theClass, baseClass)                        \
-	const DUI_MSGMAP* PASCAL theClass::_GetBaseMessageMap()               \
+	const DuiLib::DUI_MSGMAP* PASCAL theClass::_GetBaseMessageMap()       \
 		{ return &baseClass::messageMap; }                                \
-	const DUI_MSGMAP* theClass::GetMessageMap() const                     \
+	const DuiLib::DUI_MSGMAP* theClass::GetMessageMap() const             \
 		{ return &theClass::messageMap; }                                 \
-	UILIB_COMDAT const DUI_MSGMAP theClass::messageMap =                  \
+	UILIB_COMDAT const DuiLib::DUI_MSGMAP theClass::messageMap =          \
 		{ &theClass::_GetBaseMessageMap, &theClass::_messageEntries[0] }; \
-	UILIB_COMDAT const DUI_MSGMAP_ENTRY theClass::_messageEntries[] =     \
+	UILIB_COMDAT const DuiLib::DUI_MSGMAP_ENTRY theClass::_messageEntries[] =     \
 	{                                                                     \
 
 #else
 #define DUI_BEGIN_MESSAGE_MAP(theClass, baseClass)                        \
-	const DUI_MSGMAP* theClass::GetMessageMap() const                     \
+	const DuiLib::DUI_MSGMAP* theClass::GetMessageMap() const             \
 		{ return &theClass::messageMap; }                                 \
-	UILIB_COMDAT const DUI_MSGMAP theClass::messageMap =                  \
+	UILIB_COMDAT const DuiLib::DUI_MSGMAP theClass::messageMap =          \
 		{ &baseClass::messageMap, &theClass::_messageEntries[0] };        \
-	UILIB_COMDAT const DUI_MSGMAP_ENTRY theClass::_messageEntries[] =     \
+	UILIB_COMDAT const DuiLib::DUI_MSGMAP_ENTRY theClass::_messageEntries[] =     \
 	{                                                                     \
 
 #endif
@@ -169,45 +170,45 @@ protected:                                                                \
 
 //声明结束
 #define DUI_END_MESSAGE_MAP()                                             \
-	{ _T(""), _T(""), DuiSig_end, (DUI_PMSG)0 }                           \
+	{ _T(""), _T(""), DuiLib::DuiSig_end, (DuiLib::DUI_PMSG)0 }           \
 };                                                                        \
 
 
 //定义消息类型--执行函数宏
 #define DUI_ON_MSGTYPE(msgtype, memberFxn)                                \
-	{ msgtype, _T(""), DuiSig_vn, (DUI_PMSG)&memberFxn},                  \
+	{ msgtype, _T(""), DuiLib::DuiSig_vn, (DuiLib::DUI_PMSG)&memberFxn},  \
 
 
 //定义消息类型--控件名称--执行函数宏
 #define DUI_ON_MSGTYPE_CTRNAME(msgtype,ctrname,memberFxn)                 \
-	{ msgtype, ctrname, DuiSig_vn, (DUI_PMSG)&memberFxn },                \
+	{ msgtype, ctrname, DuiLib::DuiSig_vn, (DuiLib::DUI_PMSG)&memberFxn },     \
 
 
 //定义click消息的控件名称--执行函数宏
-#define DUI_ON_CLICK_CTRNAME(ctrname,memberFxn)                           \
-	{ DUI_MSGTYPE_CLICK, ctrname, DuiSig_vn, (DUI_PMSG)&memberFxn },      \
+#define DUI_ON_CLICK_CTRNAME(ctrname,memberFxn)                                \
+	{ DUI_MSGTYPE_CLICK, ctrname, DuiLib::DuiSig_vn, (DuiLib::DUI_PMSG)&memberFxn },   \
 
 
 //定义selectchanged消息的控件名称--执行函数宏
-#define DUI_ON_SELECTCHANGED_CTRNAME(ctrname,memberFxn)                   \
-    { DUI_MSGTYPE_SELECTCHANGED,ctrname,DuiSig_vn,(DUI_PMSG)&memberFxn }, \
+#define DUI_ON_SELECTCHANGED_CTRNAME(ctrname,memberFxn)                        \
+    { DUI_MSGTYPE_SELECTCHANGED,ctrname, DuiLib::DuiSig_vn,(DuiLib::DUI_PMSG)&memberFxn }, \
 
 
 //定义killfocus消息的控件名称--执行函数宏
-#define DUI_ON_KILLFOCUS_CTRNAME(ctrname,memberFxn)                       \
-	{ DUI_MSGTYPE_KILLFOCUS,ctrname,DuiSig_vn,(DUI_PMSG)&memberFxn },     \
+#define DUI_ON_KILLFOCUS_CTRNAME(ctrname,memberFxn)                            \
+	{ DUI_MSGTYPE_KILLFOCUS,ctrname, DuiLib::DuiSig_vn,(DuiLib::DUI_PMSG)&memberFxn },  \
 
 
 //定义menu消息的控件名称--执行函数宏
-#define DUI_ON_MENU_CTRNAME(ctrname,memberFxn)                            \
-	{ DUI_MSGTYPE_MENU,ctrname,DuiSig_vn,(DUI_PMSG)&memberFxn },          \
+#define DUI_ON_MENU_CTRNAME(ctrname,memberFxn)                                    \
+	{ DUI_MSGTYPE_MENU,ctrname, DuiLib::DuiSig_vn,(DuiLib::DUI_PMSG)&memberFxn }, \
 
 
 //定义与控件名称无关的消息宏
 
   //定义timer消息--执行函数宏
-#define DUI_ON_TIMER()                                                    \
-	{ DUI_MSGTYPE_TIMER, _T(""), DuiSig_vn,(DUI_PMSG)&OnTimer },          \
+#define DUI_ON_TIMER()                                                          \
+	{ DUI_MSGTYPE_TIMER, _T(""), DuiLib::DuiSig_vn,(DuiLib::DUI_PMSG)&OnTimer },\
 
 
 ///
