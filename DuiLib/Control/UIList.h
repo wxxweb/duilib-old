@@ -12,6 +12,8 @@ namespace DuiLib {
 typedef int (CALLBACK *PULVCompareFunc)(UINT_PTR, UINT_PTR, UINT_PTR);
 
 class CListHeaderUI;
+class CListHeaderItemUI;
+class CListContainerElementUI;
 
 #define UILIST_MAX_COLUMNS 32
 
@@ -190,6 +192,13 @@ public:
     virtual CScrollBarUI* GetVerticalScrollBar() const;
     virtual CScrollBarUI* GetHorizontalScrollBar() const;
     BOOL SortItems(PULVCompareFunc pfnCompare, UINT_PTR dwData);
+
+	BOOL InsertColumn(int nCol, CListHeaderItemUI *pHeaderItem);
+	int InsertItem(int nItem, int nHeight = 20);
+	int InsertItem(int nItem, int nHeight, CListContainerElementUI *pListItem);
+	void SetItemData(int nItem, int nColumn, LPCTSTR Text, LPCTSTR Name);
+	void SetItemData(int nItem, int nColumn, CControlUI* pControl);
+
 protected:
     bool m_bScrollSelect;
     int m_iCurSel;
@@ -432,11 +441,15 @@ public:
     void DrawItemText(HDC hDC, const RECT& rcItem);    
     void DrawItemBk(HDC hDC, const RECT& rcItem);
 
+ 	void SetPos(RECT rc);
+	void SetListHeader(CListHeaderUI *pHeader);
+	
 protected:
     int m_iIndex;
     bool m_bSelected;
     UINT m_uButtonState;
     IListOwnerUI* m_pOwner;
+	CListHeaderUI *m_pHeader;
 };
 
 } // namespace DuiLib

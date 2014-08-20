@@ -853,6 +853,92 @@ BOOL CListUI::SortItems(PULVCompareFunc pfnCompare, UINT_PTR dwData)
 		return FALSE;
 	return m_pList->SortItems(pfnCompare, dwData);	
 }
+
+
+BOOL CListUI::InsertColumn(int nCol, CListHeaderItemUI *pHeaderItem)
+{
+	CListHeaderUI *pHeader = CListUI::GetHeader();
+	if (pHeader == NULL)
+	{
+		return FALSE;
+	}
+
+	if (pHeader->AddAt(pHeaderItem, nCol))
+	{		
+		return TRUE;
+	}
+
+	delete pHeaderItem;
+	pHeaderItem = NULL;
+	return FALSE;
+}
+
+int CListUI::InsertItem(int nItem, int nHeight)
+{
+	CListContainerElementUI *pListItem = new CListContainerElementUI;
+	pListItem->SetFixedHeight(nHeight);/*固定一个行高*/
+	
+	CListHeaderUI *pHeader = CListUI::GetHeader();
+	pListItem->SetListHeader(pHeader);
+	if (NULL != pHeader)
+	{
+		int nHeaderCount = pHeader->GetCount();
+		for (int i = 0; i < nHeaderCount; i++)
+		{
+			pListItem->Add(new CHorizontalLayoutUI);
+		}
+	}
+	if ( !CListUI::AddAt(pListItem, nItem) )
+	{
+		delete pListItem;
+		pListItem = NULL;
+		return -1;
+	}
+	return nItem;
+}
+
+int CListUI::InsertItem(int nItem, int nHeight, CListContainerElementUI *pListItem)
+{
+	pListItem->SetFixedHeight(nHeight);	
+	pListItem->SetListHeader(CListUI::GetHeader());
+	if ( !CListUI::AddAt(pListItem, nItem) )
+	{
+		delete pListItem;
+		pListItem = NULL;
+		return -1;
+	}
+
+	return nItem;
+}
+
+void CListUI::SetItemData(int nItem,
+	int nColumn,
+	LPCTSTR Text, LPCTSTR Name)
+{
+	CLabelUI *pLabel = new CLabelUI;
+	pLabel->SetText(Text);//控件属性就根据需求设置吧,我简单设置一下
+	pLabel->SetTextStyle(DT_CENTER);
+	pLabel->SetAttribute(_T("endellipsis"), _T("true"));
+	pLabel->SetName(Name);
+	SetItemData(nItem, nColumn, pLabel);//添加到父控件
+}
+
+void CListUI::SetItemData(int nItem, int nColumn, CControlUI* pControl)
+{
+	CListContainerElementUI *pListItem = 
+		static_cast<CListContainerElementUI*>(CListUI::GetItemAt(nItem));
+	if (NULL == pListItem) {
+		return;
+	}
+	CHorizontalLayoutUI *pSubItem = 
+		static_cast<CHorizontalLayoutUI*>(pListItem->GetItemAt(nColumn));
+	if (NULL == pSubItem) {
+		return;
+	}
+	pSubItem->SetAttribute(_T("inset"), _T("3,1,3,1"));
+	pSubItem->Add(pControl);//添加到父控件
+}
+
 /////////////////////////////////////////////////////////////////////////////////////
 //
 //
@@ -2092,7 +2178,8 @@ CListContainerElementUI::CListContainerElementUI() :
 m_iIndex(-1),
 m_pOwner(NULL), 
 m_bSelected(false),
-m_uButtonState(0)
+m_uButtonState(0),
+m_pHeader(NULL)
 {
 }
 
@@ -2371,5 +2458,37 @@ void CListContainerElementUI::DrawItemBk(HDC hDC, const RECT& rcItem)
         CRenderEngine::DrawLine(hDC, rcLine, 1, GetAdjustColor(pInfo->dwLineColor));
     }
 }
+
+void CListContainerElementUI::SetPos(RECT rc)
+{
+	CContainerUI::SetPos(rc);
+	if( m_pOwner == NULL ) return;		
+
+	if (m_pHeader == NULL)
+	{
+		return;
+	}
+	TListInfoUI* pInfo = m_pOwner->GetListInfo();
+	int nCount = m_items.GetSize();
+	for (int i = 0; i < nCount; i++)
+	{
+		CControlUI *pHorizontalLayout = static_cast<CControlUI*>(m_items[i]);
+		CListHeaderItemUI *pHeaderItem = static_cast<CListHeaderItemUI*>(m_pHeader->GetItemAt(i));
+		if (pHorizontalLayout != NULL && pHeaderItem != NULL)
+		{
+			RECT rtHeader = pHeaderItem->GetPos();
+			RECT rt = pHorizontalLayout->GetPos();
+			rt.left = rtHeader.left;
+			rt.right = rtHeader.right;
+			pHorizontalLayout->SetPos(rt);
+		}
+	}
+}
+
+void CListContainerElementUI::SetListHeader(CListHeaderUI *pHeader)
+{
+	m_pHeader = pHeader;
+}
+
 
 } // namespace DuiLib
