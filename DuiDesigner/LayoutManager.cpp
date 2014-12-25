@@ -1067,7 +1067,7 @@ CControlUI* CLayoutManager::CloneControl(CControlUI* pControl)
 		pCopyControl = new CListContainerElementUI(*static_cast<CListContainerElementUI*>(pControl->GetInterface(_T("ListContainerElement"))));
 		break;
 	case classWebBrowser:
-		pCopyControl=new CWebBrowserUI(*static_cast<CWebBrowserUI*>(pControl->GetInterface(_T("WebBrowser"))));
+		pCopyControl = new CWebBrowserUI(*static_cast<CWebBrowserUI*>(pControl->GetInterface(_T("WebBrowser"))));
 			break;
 	case classList:
 		{//0917 by 邓景仁(cddjr) , 在不改动duilib的前提下，只能采用如下代码 

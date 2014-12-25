@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+#include <MsHtmHst.h>
 
 namespace DuiLib {
 
@@ -207,7 +208,8 @@ class CActiveXCtrl :
     public IOleInPlaceSiteWindowless,
     public IOleControlSite,
     public IObjectWithSite,
-    public IOleContainer
+    public IOleContainer,
+	public IDocHostUIHandler
 {
     friend class CActiveXUI;
     friend class CActiveXWnd;
@@ -283,6 +285,24 @@ public:
     // IParseDisplayName
     STDMETHOD(ParseDisplayName)(IBindCtx* pbc, LPOLESTR pszDisplayName, ULONG* pchEaten, IMoniker** ppmkOut);
 
+
+	//IDocHostUIHandler
+	STDMETHOD(ShowContextMenu)(DWORD dwID, POINT FAR* ppt, IUnknown FAR* pcmdtReserved,IDispatch FAR* pdispReserved);
+	STDMETHOD(GetHostInfo)(DOCHOSTUIINFO FAR* pInfo);
+	STDMETHOD(ShowUI)(DWORD dwID, IOleInPlaceActiveObject FAR* pActiveObject,IOleCommandTarget FAR* pCommandTarget,IOleInPlaceFrame  FAR* pFrame,IOleInPlaceUIWindow FAR* pDoc);
+	STDMETHOD(HideUI)(void);    
+	STDMETHOD(UpdateUI)(void);
+	STDMETHOD(EnableModeless)(BOOL fEnable);
+	STDMETHOD(OnDocWindowActivate)(BOOL fActivate);
+	STDMETHOD(OnFrameWindowActivate)(BOOL fActivate);
+	STDMETHOD(ResizeBorder)(LPCRECT prcBorder, IOleInPlaceUIWindow FAR* pUIWindow,BOOL fRameWindow);
+	STDMETHOD(TranslateAccelerator)(LPMSG lpMsg, const GUID FAR* pguidCmdGroup,DWORD nCmdID);   
+	STDMETHOD(GetOptionKeyPath)(LPOLESTR FAR* pchKey, DWORD dw);
+	STDMETHOD(GetDropTarget)(IDropTarget* pDropTarget,IDropTarget** ppDropTarget);
+	STDMETHOD(GetExternal)(IDispatch** ppDispatch);
+	STDMETHOD(TranslateUrl)(DWORD dwTranslate, OLECHAR* pchURLIn,OLECHAR** ppchURLOut);
+	STDMETHOD(FilterDataObject)(IDataObject* pDO, IDataObject** ppDORet);
+
 protected:
     HRESULT CreateActiveXWnd();
 
@@ -340,6 +360,7 @@ STDMETHODIMP CActiveXCtrl::QueryInterface(REFIID riid, LPVOID *ppvObject)
     else if( riid == IID_IOleControlSite )           *ppvObject = static_cast<IOleControlSite*>(this);
     else if( riid == IID_IOleContainer )             *ppvObject = static_cast<IOleContainer*>(this);
     else if( riid == IID_IObjectWithSite )           *ppvObject = static_cast<IObjectWithSite*>(this);
+	else if( riid == IID_IDocHostUIHandler)           *ppvObject = static_cast<IDocHostUIHandler*>(this);
     if( *ppvObject != NULL ) AddRef();
     return *ppvObject == NULL ? E_NOINTERFACE : S_OK;
 }
@@ -737,6 +758,77 @@ STDMETHODIMP CActiveXCtrl::ParseDisplayName(IBindCtx *pbc, LPOLESTR pszDisplayNa
     DUITRACE(_T("AX: CActiveXCtrl::ParseDisplayName"));
     return E_NOTIMPL;
 }
+
+STDMETHODIMP CActiveXCtrl::ShowContextMenu(DWORD dwID, POINT FAR* ppt, IUnknown FAR* pcmdtReserved,IDispatch FAR* pdispReserved)
+{        
+	return E_NOTIMPL;
+} 
+
+STDMETHODIMP CActiveXCtrl::GetHostInfo(DOCHOSTUIINFO FAR* pInfo)
+{        
+	if(pInfo != NULL)
+	{            
+		pInfo->cbSize = sizeof(DOCHOSTUIINFO);
+		//pInfo->dwFlags			= DOCHOSTUIFLAG_NO3DBORDER;							// duiLib默认设置，暂不使用
+		pInfo->dwDoubleClick	= DOCHOSTUIDBLCLK_DEFAULT;
+		pInfo->dwFlags		    = DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG_NO3DBORDER;	// 默认情况下，去掉边框及滚动条
+	}         
+	return S_OK;    
+}         
+
+STDMETHODIMP CActiveXCtrl::ShowUI(DWORD dwID, IOleInPlaceActiveObject FAR* pActiveObject,                    IOleCommandTarget FAR* pCommandTarget,                    IOleInPlaceFrame  FAR* pFrame,                    IOleInPlaceUIWindow FAR* pDoc)    
+{        
+	return E_NOTIMPL;    
+}         
+
+STDMETHODIMP CActiveXCtrl::HideUI(void)    
+{       
+	return E_NOTIMPL;
+}      
+STDMETHODIMP CActiveXCtrl::UpdateUI(void)  
+{       
+	return E_NOTIMPL;  
+}        
+STDMETHODIMP CActiveXCtrl::EnableModeless(BOOL fEnable) 
+{        
+	return E_NOTIMPL; 
+}    
+STDMETHODIMP CActiveXCtrl::OnDocWindowActivate(BOOL fActivate)  
+{      
+	return E_NOTIMPL; 
+}    
+STDMETHODIMP CActiveXCtrl::OnFrameWindowActivate(BOOL fActivate) 
+{       
+	return E_NOTIMPL; 
+}    
+STDMETHODIMP CActiveXCtrl::ResizeBorder(LPCRECT prcBorder, IOleInPlaceUIWindow FAR* pUIWindow,BOOL fRameWindow)   
+{       
+	return E_NOTIMPL; 
+}    
+STDMETHODIMP CActiveXCtrl::TranslateAccelerator(LPMSG lpMsg, const GUID FAR* pguidCmdGroup,DWORD nCmdID)    
+{       
+	return E_NOTIMPL;  
+}     
+STDMETHODIMP CActiveXCtrl::GetOptionKeyPath(LPOLESTR FAR* pchKey, DWORD dw)  
+{       
+	return E_NOTIMPL; 
+}   
+STDMETHODIMP CActiveXCtrl::GetDropTarget(IDropTarget* pDropTarget,IDropTarget** ppDropTarget)   
+{       
+	return E_NOTIMPL;  
+}    
+STDMETHODIMP CActiveXCtrl::GetExternal(IDispatch** ppDispatch) 
+{      
+	return E_NOTIMPL;
+}    
+STDMETHODIMP CActiveXCtrl::TranslateUrl(DWORD dwTranslate, OLECHAR* pchURLIn,OLECHAR** ppchURLOut) 
+{      
+	return E_NOTIMPL;  
+} 
+STDMETHODIMP CActiveXCtrl::FilterDataObject(IDataObject* pDO, IDataObject** ppDORet)  
+{   
+	return E_NOTIMPL;   
+} 
 
 HRESULT CActiveXCtrl::CreateActiveXWnd()
 {

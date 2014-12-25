@@ -178,32 +178,34 @@ namespace DuiLib
 
 	void CLabelUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		if( _tcscmp(pstrName, _T("align")) == 0 ) {
-			if( _tcsstr(pstrValue, _T("left")) != NULL ) {
-				m_uTextStyle &= ~(DT_CENTER | DT_RIGHT | DT_VCENTER | DT_SINGLELINE);
-				m_uTextStyle |= DT_LEFT;
-			}
-			if( _tcsstr(pstrValue, _T("center")) != NULL ) {
-				m_uTextStyle &= ~(DT_LEFT | DT_RIGHT );
-				m_uTextStyle |= DT_CENTER;
-			}
-			if( _tcsstr(pstrValue, _T("right")) != NULL ) {
-				m_uTextStyle &= ~(DT_LEFT | DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-				m_uTextStyle |= DT_RIGHT;
-			}
-			if( _tcsstr(pstrValue, _T("top")) != NULL ) {
-				m_uTextStyle &= ~(DT_BOTTOM | DT_VCENTER | DT_VCENTER);
-				m_uTextStyle |= (DT_TOP | DT_SINGLELINE);
-			}
-			if( _tcsstr(pstrValue, _T("vcenter")) != NULL ) {
-				m_uTextStyle &= ~(DT_TOP | DT_BOTTOM );			
-				m_uTextStyle |= (DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-			}
-			if( _tcsstr(pstrValue, _T("bottom")) != NULL ) {
-				m_uTextStyle &= ~(DT_TOP | DT_VCENTER | DT_VCENTER);
-				m_uTextStyle |= (DT_BOTTOM | DT_SINGLELINE);
-			}
-		}
+        if( _tcscmp(pstrName, _T("align")) == 0 ) {
+            if( _tcsstr(pstrValue, _T("left")) != NULL ) {
+                m_uTextStyle &= ~(DT_CENTER | DT_RIGHT | DT_SINGLELINE);
+                m_uTextStyle |= DT_LEFT;
+            }
+            if( _tcsstr(pstrValue, _T("center")) != NULL ) {
+                m_uTextStyle &= ~(DT_LEFT | DT_RIGHT );
+                m_uTextStyle |= DT_CENTER;
+            }
+            if( _tcsstr(pstrValue, _T("right")) != NULL ) {
+                m_uTextStyle &= ~(DT_LEFT | DT_CENTER | DT_SINGLELINE);
+                m_uTextStyle |= DT_RIGHT;
+            }
+        }
+        else if( _tcscmp(pstrName, _T("valign")) == 0 ) {
+            if( _tcsstr(pstrValue, _T("top")) != NULL ) {
+                m_uTextStyle &= ~(DT_BOTTOM | DT_VCENTER);
+                m_uTextStyle |= (DT_TOP | DT_SINGLELINE);
+            }
+            if( _tcsstr(pstrValue, _T("vcenter")) != NULL ) {
+                m_uTextStyle &= ~(DT_TOP | DT_BOTTOM );			
+                m_uTextStyle |= (DT_VCENTER | DT_SINGLELINE);
+            }
+            if( _tcsstr(pstrValue, _T("bottom")) != NULL ) {
+                m_uTextStyle &= ~(DT_TOP | DT_VCENTER);
+                m_uTextStyle |= (DT_BOTTOM | DT_SINGLELINE);
+            }
+        }
 		else if( _tcscmp(pstrName, _T("endellipsis")) == 0 ) {
 			if( _tcscmp(pstrValue, _T("true")) == 0 ) m_uTextStyle |= DT_END_ELLIPSIS;
 			else m_uTextStyle &= ~DT_END_ELLIPSIS;

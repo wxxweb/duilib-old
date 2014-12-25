@@ -255,6 +255,11 @@ protected:                                                                \
 #define  DUI_CTR_LISTELEMENT                     (_T("ListElement"))
 
 #define  DUI_CTR_DIALOGLAYOUT                    (_T("DialogLayout"))
+#define  DUI_CTR_WEBBROWSERIE                     (_T("WebBrowserIE"))
+
+#ifdef UILIB_WEBBROSER_CEF
+#define  DUI_CTR_WEBBROWSERCEF                   (_T("WebBrowserCEF"))
+#endif
 
 #define  DUI_CTR_VERTICALLAYOUT                  (_T("VerticalLayout"))
 #define  DUI_CTR_LISTHEADERITEM                  (_T("ListHeaderItem"))

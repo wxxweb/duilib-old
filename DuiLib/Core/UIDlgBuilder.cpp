@@ -382,11 +382,18 @@ CControlUI* CDialogBuilder::_Parse(CMarkupNode* pRoot, CControlUI* pParent, CPai
             case 10:
                 if( _tcscmp(pstrClass, DUI_CTR_LISTHEADER) == 0 )             pControl = new CListHeaderUI;
                 else if( _tcscmp(pstrClass, DUI_CTR_TILELAYOUT) == 0 )        pControl = new CTileLayoutUI;
-				else if( _tcscmp(pstrClass, DUI_CTR_WEBBROWSER) == 0 )        pControl = new CWebBrowserUI;
+				else if( _tcscmp(pstrClass, DUI_CTR_WEBBROWSER) == 0 )		  pControl = new CWebBrowserIeUI;
                 break;
 			case 11:
 				if (_tcscmp(pstrClass, DUI_CTR_CHILDLAYOUT) == 0)			  pControl = new CChildLayoutUI;
 				break;
+			case 12:
+				if( _tcscmp(pstrClass, DUI_CTR_WEBBROWSERIE) == 0 )			  pControl = new CWebBrowserIeUI;
+#ifdef UILIB_WEBBROSER_CEF
+			case 13:
+				if (_tcscmp(pstrClass, DUI_CTR_WEBBROWSERCEF) == 0)			  pControl = new CWebBrowserCefUI;
+				break;
+#endif // UILIB_WEBBROSER_CEF
             case 14:
                 if( _tcscmp(pstrClass, DUI_CTR_VERTICALLAYOUT) == 0 )         pControl = new CVerticalLayoutUI;
                 else if( _tcscmp(pstrClass, DUI_CTR_LISTHEADERITEM) == 0 )    pControl = new CListHeaderItemUI;

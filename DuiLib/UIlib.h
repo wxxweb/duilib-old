@@ -103,6 +103,12 @@
 #include "Control/UIDateTime.h"
 
 #include "Control/UIActiveX.h"
-#include "Control/UIWebBrowser.h"
+#include "Control/UIWebBrowserIE.h"
+#include "Control/UIWebBrowserCEF.h"
 //#include "Control/UIFlash.h"
 
+#define CWebBrowserUI CWebBrowserIeUI
+#ifdef UILIB_WEBBROSER_CEF
+#  undef CWebBrowserUI
+#  define CWebBrowserUI CWebBrowserCefUI
+#endif

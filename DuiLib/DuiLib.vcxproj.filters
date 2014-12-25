@@ -150,6 +150,12 @@
     <ClCompile Include="Control\UIImport.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
+    <ClCompile Include="Control\UIWebBrowserCEF.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\UIWebBrowserIE.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StdAfx.h">
@@ -268,6 +274,27 @@
     </ClInclude>
     <ClInclude Include="Control\UIImport.h">
       <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="Control\UIWebBrowserCEF.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="Control\UIWebBrowserIE.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\cef_web_browser.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\cef_web_browser_event_handler_i.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\cef_web_browser_i.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\WebBrowserEventHandlerCEF.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\WebBrowserEventHandlerIE.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
