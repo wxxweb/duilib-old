@@ -27,6 +27,11 @@
 // NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#ifndef __DUILIB_UI_LIB_H__
+#define __DUILIB_UI_LIB_H__
+#pragma once
+
+
 #if defined(UILIB_EXPORTS)
 #if defined(_MSC_VER)
 #define UILIB_API __declspec(dllexport)
@@ -112,3 +117,5 @@
 #  undef CWebBrowserUI
 #  define CWebBrowserUI CWebBrowserCefUI
 #endif
+
+#endif // __DUILIB_UI_LIB_H__
