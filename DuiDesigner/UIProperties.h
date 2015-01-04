@@ -213,6 +213,10 @@ enum PropertyTag
 	tagComboTextPadding,
 	tagComboDropBoxSize,
 
+	//ComboBox
+	tagComboBox,
+	tagComboBoxArrowImage=tagComboBox,
+
 	//ActiveX
 	tagActiveX,
 	tagClsid=tagActiveX,
@@ -328,6 +332,7 @@ protected:
 	void ShowProgressProperty(CControlUI* pControl);
 	void ShowSliderProperty(CControlUI* pControl);
 	void ShowComboProperty(CControlUI* pControl);
+	void ShowComboBoxProperty(CControlUI* pControl);
 	void ShowActiveXProperty(CControlUI* pControl);
 	void ShowListProperty(CControlUI* pControl);
 	void ShowItemProperty(CControlUI* pControl);

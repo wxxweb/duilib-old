@@ -112,6 +112,7 @@ enum UIClass
 	classText,
 	classOption,
 	classCombo,
+	classComboBox,
 	classList,
 	classSlider,
 	classProgress,
@@ -180,6 +181,7 @@ using DuiLib::CLabelUI;
 using DuiLib::CTextUI;
 using DuiLib::COptionUI;
 using DuiLib::CComboUI;
+using DuiLib::CComboBoxUI;
 using DuiLib::CListUI;
 using DuiLib::CSliderUI;
 using DuiLib::CProgressUI;

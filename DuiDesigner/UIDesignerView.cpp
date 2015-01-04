@@ -1104,6 +1104,8 @@ void CUIDesignerView::ShowPropertyDialog(CControlUI* pControl)
 		break;
 	case classCombo: 
 		break;
+	case classComboBox:
+		break;
 	case classActiveX:
 		break;
 	case classImport:

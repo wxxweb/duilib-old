@@ -717,6 +717,11 @@ CControlUI* CLayoutManager::NewUI(int nClass,CRect& rect,CControlUI* pParent, CL
 		pExtended->nClass=classCombo;
 		pControl->SetFloat(true);
 		break;
+	case classComboBox:
+		pControl=new CComboBoxUI;
+		pExtended->nClass=classComboBox;
+		pControl->SetFloat(true);
+		break;
 	case classList:
 		pControl=new CListUI;
 		pExtended->nClass=classList;
@@ -1032,6 +1037,9 @@ CControlUI* CLayoutManager::CloneControl(CControlUI* pControl)
 		break;
 	case classCombo:
 		pCopyControl = new CComboUI(*static_cast<CComboUI*>(pControl->GetInterface(_T("Combo"))));
+		break;
+	case classComboBox:
+		pCopyControl = new CComboBoxUI(*static_cast<CComboBoxUI*>(pControl->GetInterface(_T("ComboBox"))));
 		break;
 	case classActiveX:
 		pCopyControl = new CActiveXUI(*static_cast<CActiveXUI*>(pControl->GetInterface(_T("ActiveX"))));
@@ -2085,6 +2093,19 @@ void CLayoutManager::SaveComboProperty(CControlUI* pControl, TiXmlElement* pNode
 	}
 }
 
+
+void CLayoutManager::SaveComboBoxProperty(CControlUI* pControl, TiXmlElement* pNode)
+{
+	SaveComboProperty(pControl, pNode);
+
+	CComboBoxUI* pComboBoxUI = static_cast<CComboBoxUI*>(pControl->GetInterface(_T("ComboBox")));
+
+	TCHAR szBuf[MAX_PATH] = {0};
+
+	if(pComboBoxUI->GetArrowImage() && _tcslen(pComboBoxUI->GetArrowImage()) > 0)
+		pNode->SetAttribute("arrowimage", StringConvertor::WideToUtf8(ConvertImageFileName(pComboBoxUI->GetArrowImage())));
+}
+
 void CLayoutManager::SaveListHeaderItemProperty(CControlUI* pControl, TiXmlElement* pNode)
 {
 	SaveControlProperty(pControl, pNode);
@@ -2273,6 +2294,9 @@ void CLayoutManager::SaveProperties(CControlUI* pControl, TiXmlElement* pParentN
 		break;
 	case classCombo: 
 		SaveComboProperty(pControl, pNode);
+		break;
+	case classComboBox: 
+		SaveComboBoxProperty(pControl, pNode);
 		break;
 	case classList:
 		SaveListProperty(pControl, pNode);

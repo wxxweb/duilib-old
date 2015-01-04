@@ -194,11 +194,12 @@
 #define ID_UI_CONTROL_EDIT              32797
 #define ID_UI_CONTROL_OPTION            32798
 #define ID_UI_CONTROL_COMBO             32799
-#define ID_UI_CONTROL_PROGRESS          32800
-#define ID_UI_CONTROL_SLIDER            32801
-#define ID_UI_CONTROL_ACTIVEX           32802
-#define ID_UI_CONTROL_IMPORT            32803
-#define ID_UI_LAYOUT_VERTICAL           32804
+#define ID_UI_CONTROL_COMBOBOX          32800
+#define ID_UI_CONTROL_PROGRESS          32801
+#define ID_UI_CONTROL_SLIDER            32802
+#define ID_UI_CONTROL_ACTIVEX           32803
+#define ID_UI_CONTROL_IMPORT            32804
+#define ID_UI_LAYOUT_VERTICAL           32805
 #define ID_UI_LAYOUT_HORIZONTAL         32806
 #define ID_UI_LAYOUT_CONTAINER          32808
 #define ID_UI_LAYOUT_DIALOG             32810

@@ -13,6 +13,14 @@ namespace DuiLib
 		return _T("ComboBoxUI");
 	}
 
+	LPVOID CComboBoxUI::GetInterface(LPCTSTR pstrName)
+	{
+		if( _tcscmp(pstrName, DUI_CTR_COMBOBOX) == 0 ) return static_cast<CComboBoxUI*>(this);
+		if( _tcscmp(pstrName, DUI_CTR_COMBO) == 0 ) return static_cast<CComboUI*>(this);
+		if( _tcscmp(pstrName, _T("IListOwner")) == 0 ) return static_cast<IListOwnerUI*>(this);
+		return CContainerUI::GetInterface(pstrName);
+	}
+
 	void CComboBoxUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
 		if (_tcscmp(pstrName, _T("arrowimage")) == 0)
@@ -104,5 +112,10 @@ namespace DuiLib
 				pControl->SetPos(rcOldPos);
 			}
 		}
+	}
+
+	CDuiString CComboBoxUI::GetArrowImage() const
+	{
+		return m_sArrowImage;
 	}
 }

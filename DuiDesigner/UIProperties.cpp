@@ -1002,6 +1002,15 @@ void CUIProperties::InitPropList()
 	m_wndPropList.AddProperty(pPropUI);
 #pragma endregion Combo
 
+#pragma region ComboBox
+	pPropUI=new CMFCPropertyGridProperty(_T("ComboBox"),classComboBox);
+
+	pProp=new CMFCPropertyGridProperty(_T("ArrowImage"),(_variant_t)_T(""),_T("¼ýÍ·Í¼Æ¬ÊôÐÔ£¬Èç£ºfile='arrow.png' source='0,0,80,16'"),tagComboBoxArrowImage);//arrowimage
+	pPropUI->AddSubItem(pProp);
+
+	m_wndPropList.AddProperty(pPropUI);
+#pragma endregion ComboBox
+
 	//HorizontalLayout
 #pragma region HorizontalLayout
 	pPropUI=new CMFCPropertyGridProperty(_T("HorizontalLayout"),classHorizontalLayout);
@@ -1285,8 +1294,11 @@ void CUIProperties::ShowProperty(CControlUI* pControl)
 	case classSlider:
 		ShowSliderProperty(pControl);
 		break;
-	case classCombo: 
+	case classCombo:
 		ShowComboProperty(pControl);
+		break;
+	case classComboBox:
+		ShowComboBoxProperty(pControl);
 		break;
 	case classActiveX:
 		ShowActiveXProperty(pControl);
@@ -1822,6 +1834,23 @@ void CUIProperties::ShowComboProperty(CControlUI* pControl)
 	pValueList->GetSubItem(0)->SetOriginalValue((_variant_t)(LONG)size.cx);
 	pValueList->GetSubItem(1)->SetOriginalValue((_variant_t)(LONG)size.cy);
 	pPropCombo->Show(TRUE,FALSE);
+}
+
+void CUIProperties::ShowComboBoxProperty(CControlUI* pControl)
+{
+	ShowComboProperty(pControl);
+
+	ASSERT(pControl);
+	CComboBoxUI* pComboBox=static_cast<CComboBoxUI*>(pControl->GetInterface(_T("ComboBox")));
+	ASSERT(pComboBox);
+
+	CMFCPropertyGridProperty* pPropComboBox=m_wndPropList.FindItemByData(classComboBox,FALSE);
+	ASSERT(pPropComboBox);
+
+	//arrowimage
+	pPropComboBox->GetSubItem(tagComboBoxArrowImage-tagComboBox)->SetValue((_variant_t)pComboBox->GetArrowImage());
+	pPropComboBox->GetSubItem(tagComboBoxArrowImage-tagComboBox)->SetOriginalValue((_variant_t)pComboBox->GetArrowImage());
+	pPropComboBox->Show(TRUE,FALSE);
 }
 
 void CUIProperties::ShowActiveXProperty(CControlUI* pControl)

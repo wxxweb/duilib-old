@@ -13,11 +13,14 @@ namespace DuiLib
 	public:
 		CComboBoxUI();
 		LPCTSTR GetClass() const;
+		LPVOID GetInterface(LPCTSTR pstrName);
 
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
 		void PaintText(HDC hDC);
 		void PaintStatusImage(HDC hDC);
+
+		CDuiString GetArrowImage() const;
 
 	protected:
 		CDuiString m_sArrowImage;

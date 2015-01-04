@@ -102,6 +102,9 @@ void CDialogDefaultAttribList::OnBnClickedButtonAttribAdd()
 	case ID_UI_CONTROL_COMBO:
 		nClass = classCombo;
 		break;
+	case ID_UI_CONTROL_COMBOBOX:
+		nClass = classComboBox;
+		break;
 	case ID_UI_CONTROL_PROGRESS:
 		nClass = classProgress;
 		break;
