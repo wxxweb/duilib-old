@@ -663,6 +663,26 @@ void CUIProperties::InitPropList()
 	pPropImage->AllowEdit(FALSE);
 	pPropUI->AddSubItem(pPropImage);
 
+	pPropColor=new CMFCPropertyGridColorProperty(_T("HotBkColor"),(LONG)ARGB(0,0,0,0),NULL,_T("指定按钮获得热点时的背景色"),tagHotBkColor);//hotbkcolor
+	pPropColor->EnableOtherButton(_T("其他..."));
+	pPropColor->EnableAutomaticButton(_T("默认"),::GetSysColor(COLOR_3DFACE));
+	pPropUI->AddSubItem(pPropColor);
+
+	pPropColor=new CMFCPropertyGridColorProperty(_T("HotTextColor"),(LONG)RGB(0,0,0),NULL,_T("指定按钮获得热点时文本的颜色"),tagHotTextColor);//hottextcolor
+	pPropColor->EnableOtherButton(_T("其他..."));
+	pPropColor->EnableAutomaticButton(_T("默认"),::GetSysColor(COLOR_3DFACE));
+	pPropUI->AddSubItem(pPropColor);
+
+	pPropColor=new CMFCPropertyGridColorProperty(_T("PushedTextColor"),(LONG)RGB(0,0,0),NULL,_T("指定按钮被按下时文本的颜色"),tagPushedTextColor);//pushedtextcolor
+	pPropColor->EnableOtherButton(_T("其他..."));
+	pPropColor->EnableAutomaticButton(_T("默认"),::GetSysColor(COLOR_3DFACE));
+	pPropUI->AddSubItem(pPropColor);
+
+	pPropColor=new CMFCPropertyGridColorProperty(_T("FocusedTextColor"),(LONG)RGB(0,0,0),NULL,_T("指定按钮获得焦点后文本的颜色"),tagFocusedTextColor);//focusedtextcolor
+	pPropColor->EnableOtherButton(_T("其他..."));
+	pPropColor->EnableAutomaticButton(_T("默认"),::GetSysColor(COLOR_3DFACE));
+	pPropUI->AddSubItem(pPropColor);
+
 	m_wndPropList.AddProperty(pPropUI);
 #pragma endregion Button
 
@@ -1640,7 +1660,19 @@ void CUIProperties::ShowButtonProperty(CControlUI* pControl)
 	//disabledimage
 	pPropButton->GetSubItem(tagDisabledImage-tagButton)->SetValue((_variant_t)pButton->GetDisabledImage());
 	pPropButton->GetSubItem(tagDisabledImage-tagButton)->SetOriginalValue((_variant_t)pButton->GetDisabledImage());
-
+	//hotbkcolor
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotBkColor-tagButton))->SetColor((_variant_t)(LONG)pButton->GetHotBkColor());
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotBkColor-tagButton))->SetOriginalValue((_variant_t)(LONG)pButton->GetHotBkColor());
+	//hottextcolor
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotTextColor-tagButton))->SetColor((_variant_t)(LONG)pButton->GetHotTextColor());
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotTextColor-tagButton))->SetOriginalValue((_variant_t)(LONG)pButton->GetHotTextColor());
+	//pushedtextcolor
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagPushedTextColor-tagButton))->SetColor((_variant_t)(LONG)pButton->GetPushedTextColor());
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagPushedTextColor-tagButton))->SetOriginalValue((_variant_t)(LONG)pButton->GetPushedTextColor());
+	//focusedtextcolor
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagFocusedTextColor-tagButton))->SetColor((_variant_t)(LONG)pButton->GetFocusedTextColor());
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagFocusedTextColor-tagButton))->SetOriginalValue((_variant_t)(LONG)pButton->GetFocusedTextColor());
+	
 	pPropButton->Show(TRUE,FALSE);
 }
 

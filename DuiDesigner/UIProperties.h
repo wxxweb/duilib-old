@@ -145,6 +145,10 @@ enum PropertyTag
 	tagPushedImage,
 	tagFocusedImage,
 	tagDisabledImage,
+	tagHotBkColor,
+	tagHotTextColor,
+	tagPushedTextColor,
+	tagFocusedTextColor,
 
 	//Edit
 	tagEdit,
