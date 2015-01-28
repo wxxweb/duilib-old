@@ -1538,10 +1538,20 @@ void CLayoutManager::SaveControlProperty(CControlUI* pControl, TiXmlElement* pNo
 		pNode->SetAttribute("shortcut", StringConvertor::WideToUtf8(szBuf));
 	}
 
-	if(pControl->GetBorderSize() >0)
+	if(pControl->GetBorderSize() > 0)
 	{
 		_stprintf_s(szBuf, _T("%d"),pControl->GetBorderSize());
 		pNode->SetAttribute("bordersize", StringConvertor::WideToUtf8(szBuf));
+	}
+
+	if(pControl->GetBorderRound().cx > 0 || pControl->GetBorderRound().cy > 0)
+	{
+		_stprintf_s(szBuf,
+			_T("%d,%d"),
+			pControl->GetBorderRound().cx,
+			pControl->GetBorderRound().cy
+			);
+		pNode->SetAttribute("borderround", StringConvertor::WideToUtf8(szBuf));
 	}
 
 #if 0
