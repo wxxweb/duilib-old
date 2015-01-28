@@ -2324,6 +2324,10 @@ void CLayoutManager::SaveProperties(CControlUI* pControl, TiXmlElement* pParentN
 	case classListHeaderItem:
 		SaveListHeaderItemProperty(pControl, pNode);
 		break;
+	case classListTextElement:
+	case classListLabelElement:
+		SaveListElementProperty(pControl, pNode);
+		break;
 	case classActiveX:
 		SaveActiveXProperty(pControl, pNode);
 		break;
