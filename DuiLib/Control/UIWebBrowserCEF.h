@@ -7,16 +7,12 @@
 
 #include "../Utils/WebBrowserEventHandlerCEF.h"
 
-class CCefWebBrowser;
-
 namespace DuiLib
 {
 	typedef bool (CALLBACK* CustomSchemeHandler)(
 		LPCTSTR _scheme_name, 
 		LPCTSTR _url
 		);
-
-	class CInternEventHandle;
 
 	/**
 	 * 要使用 CEF 作为 Web 浏览器框架需要确保主程序根目录下包含以下文件及目录：
@@ -48,17 +44,16 @@ namespace DuiLib
 		virtual void SetInternVisible(bool bVisible = true) override;
 
 	public:
+		static bool AddExternal(LPCTSTR _fn_name);
+
 		static bool RegisterCustomScheme(
 			LPCTSTR _scheme_name, 
 			CustomSchemeHandler _handler
 			);
 
 	private:
-		CCefWebBrowser* const m_pCefWebBrowser;
-		CInternEventHandle* m_pEventHandler;	//浏览器事件处理
-		
-		bool m_bInit;
-		bool m_bAutoNavi;	// 是否启动时打开默认页面
+		class CImpl;
+		CImpl* const m_impl;
 	};
 }; // namespace DuiLib
 

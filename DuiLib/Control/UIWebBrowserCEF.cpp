@@ -6,18 +6,18 @@
 #include "../Utils/cef_web_browser.h"
 #include "../Utils/cef_web_browser_event_handler_i.h"
 #include <Shlwapi.h>
+#include <set>
 
 #pragma comment(lib, "w2x_cef.lib")
 
 namespace DuiLib
 {
 
-static size_t gs_nInstanceCount = 0;
-
 class CInternEventHandle: public ICefWebBrowserEventHandler
 {
 public:
-	CInternEventHandle(ICefWebBrowserEventHandler* _impl) : m_pImpl(_impl) {}
+	CInternEventHandle(CWebBrowserCefUI* _ui, ICefWebBrowserEventHandler* _impl)
+		: m_ui(_ui), m_pImpl(_impl) {}
 	~CInternEventHandle(void) {}
 
 public:
@@ -35,6 +35,7 @@ public:
 
 	virtual void OnAfterCreated(const TSTDSTR& _startup_url)
 	{
+		m_ui->SetInternVisible(true);
 		if (NULL == m_pImpl) { return; }
 		m_pImpl->OnAfterCreated(_startup_url);
 	}
@@ -124,44 +125,64 @@ public:
 
 private:
 	ICefWebBrowserEventHandler* m_pImpl;
+	CWebBrowserCefUI* m_ui;
 };
 
-CWebBrowserCefUI::CWebBrowserCefUI()
+
+class CWebBrowserCefUI::CImpl
+{
+public:
+	typedef std::set<TSTDSTR> ExternalSet;
+
+public:
+	CImpl(CWebBrowserCefUI* _parent);
+	~CImpl(void);
+
+public:
+	CCefWebBrowser* const m_pCefWebBrowser;
+	CInternEventHandle* m_pEventHandler;	//浏览器事件处理
+	bool m_bInit;
+	bool m_bAutoNavi;	// 是否启动时打开默认页面
+
+	static ExternalSet sm_external_set;
+};
+
+CWebBrowserCefUI::CImpl::ExternalSet CWebBrowserCefUI::CImpl::sm_external_set;
+
+CWebBrowserCefUI::CImpl::CImpl(CWebBrowserCefUI* _parent)
 	: m_pCefWebBrowser(new CCefWebBrowser())
-	, m_pEventHandler(new CInternEventHandle(NULL))
+	, m_pEventHandler(new CInternEventHandle(_parent, NULL))
 	, m_bInit(false)
 	, m_bAutoNavi(false)
 {
-	m_bInternVisible = false;
-
-	if (0 == gs_nInstanceCount++)
-	{
-		TSTDSTR sRootPath = CPaintManagerUI::GetCurrentPath().GetData();
-		TSTDSTR sLocalesPath = sRootPath + TEXT("locales");
-		TSTDSTR sCachePath = sRootPath + TEXT("cache");
-		TSTDSTR sLogPath = sRootPath + TEXT("log\\cef.log");
-		bool ret = CCefWebBrowser::Initialize(
-			sLocalesPath.c_str(), sCachePath.c_str(), sLogPath.c_str());
-		ASSERT(ret);
-	}
 	m_pEventHandler->RegisterWebBrowser(m_pCefWebBrowser);
+}
+
+
+CWebBrowserCefUI::CImpl::~CImpl(void)
+{
+	if (NULL == m_pEventHandler)
+	{
+		m_pEventHandler->UnregisterWebBrowser();
+		m_pEventHandler->SetImpl(NULL);
+		delete m_pEventHandler;
+	}
+
+	delete m_pCefWebBrowser;
+}
+
+
+CWebBrowserCefUI::CWebBrowserCefUI()
+	: m_impl(new CImpl(this))
+	
+{
+	m_bInternVisible = false;
 }
 
 
 CWebBrowserCefUI::~CWebBrowserCefUI()
 {
-	if (NULL == m_pCefWebBrowser)
-	{
-		m_pEventHandler->UnregisterWebBrowser();
-		delete m_pEventHandler;
-	}
-	
-	delete m_pCefWebBrowser;
-
-	if (0 == --gs_nInstanceCount)
-	{
-		CCefWebBrowser::Uninitialize();
-	}
+	delete m_impl;
 }
 
 LPCTSTR CWebBrowserCefUI::GetClass() const
@@ -196,11 +217,11 @@ void CWebBrowserCefUI::SetPos(RECT rc)
 {
 	CControlUI::SetPos(rc);
 
-	if (NULL == m_pCefWebBrowser) {
+	if (NULL == m_impl->m_pCefWebBrowser) {
 		return;
 	}
 
-	HWND hWnd = m_pCefWebBrowser->GetHwnd();
+	HWND hWnd = m_impl->m_pCefWebBrowser->GetHwnd();
 	if (NULL == hWnd || FALSE == ::IsWindow(hWnd)) {
 		return;
 	}
@@ -212,10 +233,10 @@ void CWebBrowserCefUI::SetInternVisible(bool bVisible)
 	const bool bPreInternVisible = m_bInternVisible;
 	CControlUI::SetInternVisible(bVisible);
 
-	if (false == m_bInit || NULL == m_pCefWebBrowser) {
+	if (false == m_impl->m_bInit || NULL == m_impl->m_pCefWebBrowser) {
 		return;
 	}
-	HWND hWnd = m_pCefWebBrowser->GetHwnd();
+	HWND hWnd = m_impl->m_pCefWebBrowser->GetHwnd();
 	if (NULL == hWnd || FALSE == ::IsWindow(hWnd)) {
 		return;
 	}
@@ -229,20 +250,18 @@ void CWebBrowserCefUI::SetInternVisible(bool bVisible)
 	} else {
 		::ShowWindow(hWnd, SW_HIDE);
 	}
-
-	
 }
 
 void CWebBrowserCefUI::DoInit()
 {
 	CControlUI::DoInit();
 
-	if (true == m_bInit) {
+	if (true == m_impl->m_bInit) {
 		return;
 	} else {
-		m_bInit = true;
+		m_impl->m_bInit = true;
 	}
-	if (NULL == m_pCefWebBrowser) {
+	if (NULL == m_impl->m_pCefWebBrowser) {
 		return;
 	}
 
@@ -251,13 +270,16 @@ void CWebBrowserCefUI::DoInit()
 		pszUrl = m_sHomePage.GetData();
 	}
 	HWND hWndParent = m_pManager->GetPaintWindow();
-	if (true == m_pCefWebBrowser->Create(pszUrl, hWndParent, m_pEventHandler))
+	if (true == m_impl->m_pCefWebBrowser->Create(
+		pszUrl, hWndParent, m_impl->m_pEventHandler))
 	{
-		::ShowWindow(m_pCefWebBrowser->GetHwnd(), SW_HIDE);
-		m_pCefWebBrowser->AddExternal(TEXT("notifyWebFrame"));
+		::ShowWindow(m_impl->m_pCefWebBrowser->GetHwnd(), SW_HIDE);
+		for (CImpl::ExternalSet::iterator it = CImpl::sm_external_set.begin(),
+				itEnd = CImpl::sm_external_set.end(); itEnd != it; ++it)
+		{
+			m_impl->m_pCefWebBrowser->AddExternal(*it);
+		}
 	}
-
-	return;
 }
 
 void CWebBrowserCefUI::Navigate( LPCTSTR lpszUrl )
@@ -265,15 +287,15 @@ void CWebBrowserCefUI::Navigate( LPCTSTR lpszUrl )
 	if (lpszUrl == NULL)
 		return;
 
-	if (m_pCefWebBrowser)
+	if (m_impl->m_pCefWebBrowser)
 	{
-		m_pCefWebBrowser->LoadUrl(lpszUrl);
+		m_impl->m_pCefWebBrowser->LoadUrl(lpszUrl);
 	}
 }
 
 void CWebBrowserCefUI::Refresh()
 {
-	if (m_pCefWebBrowser)
+	if (m_impl->m_pCefWebBrowser)
 	{
 		//m_pCefWebBrowser->
 	}
@@ -281,7 +303,7 @@ void CWebBrowserCefUI::Refresh()
 
 void CWebBrowserCefUI::GoBack()
 {
-	if (m_pCefWebBrowser)
+	if (m_impl->m_pCefWebBrowser)
 	{
 		//m_pCefWebBrowser->
 	}
@@ -289,7 +311,7 @@ void CWebBrowserCefUI::GoBack()
 
 void CWebBrowserCefUI::GoForward()
 {
-	if (m_pCefWebBrowser)
+	if (m_impl->m_pCefWebBrowser)
 	{
 		//m_pCefWebBrowser->
 	}
@@ -303,14 +325,25 @@ void CWebBrowserCefUI::NavigateHomePage()
 
 void CWebBrowserCefUI::SetWebBrowserEventHandler( CWebBrowserEventHandler* pEventHandler )
 {
-	if (NULL != pEventHandler && NULL != m_pEventHandler &&
+	if (NULL != pEventHandler && NULL != m_impl->m_pEventHandler &&
 		NULL != pEventHandler->GetInterface(DUI_WEB_BROWSER_EVENT_HANDLER_CEF))
 	{
 		CWebBrowserEventHandlerCEF* pEventHandlerCef = 
 			static_cast<CWebBrowserEventHandlerCEF*>(pEventHandler);
 		pEventHandlerCef->RegisterWebBrowser(this);
-		m_pEventHandler->SetImpl(pEventHandlerCef);
+		m_impl->m_pEventHandler->SetImpl(pEventHandlerCef);
 	}
+}
+
+bool CWebBrowserCefUI::AddExternal(LPCTSTR _fn_name)
+{
+	if (NULL == _fn_name || TEXT('\0') == _fn_name[0]) {
+		return false;
+	}
+
+	CImpl::sm_external_set.insert(_fn_name);
+	
+	return true;
 }
 
 bool CWebBrowserCefUI::RegisterCustomScheme(
