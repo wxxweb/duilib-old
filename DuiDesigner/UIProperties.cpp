@@ -668,6 +668,11 @@ void CUIProperties::InitPropList()
 	pPropColor->EnableAutomaticButton(_T("默认"),::GetSysColor(COLOR_3DFACE));
 	pPropUI->AddSubItem(pPropColor);
 
+	pPropColor=new CMFCPropertyGridColorProperty(_T("PushedBkColor"),(LONG)RGB(0,0,0),NULL,_T("指定按钮被按下时的背景色"),tagPushedBkColor);//pushedbkcolor
+	pPropColor->EnableOtherButton(_T("其他..."));
+	pPropColor->EnableAutomaticButton(_T("默认"),::GetSysColor(COLOR_3DFACE));
+	pPropUI->AddSubItem(pPropColor);
+
 	pPropColor=new CMFCPropertyGridColorProperty(_T("HotTextColor"),(LONG)RGB(0,0,0),NULL,_T("指定按钮获得热点时文本的颜色"),tagHotTextColor);//hottextcolor
 	pPropColor->EnableOtherButton(_T("其他..."));
 	pPropColor->EnableAutomaticButton(_T("默认"),::GetSysColor(COLOR_3DFACE));
@@ -1663,6 +1668,9 @@ void CUIProperties::ShowButtonProperty(CControlUI* pControl)
 	//hotbkcolor
 	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotBkColor-tagButton))->SetColor((_variant_t)(LONG)pButton->GetHotBkColor());
 	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotBkColor-tagButton))->SetOriginalValue((_variant_t)(LONG)pButton->GetHotBkColor());
+	//pushedbkcolor
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagPushedBkColor-tagButton))->SetColor((_variant_t)(LONG)pButton->GetPushedBkColor());
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagPushedBkColor-tagButton))->SetOriginalValue((_variant_t)(LONG)pButton->GetPushedBkColor());
 	//hottextcolor
 	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotTextColor-tagButton))->SetColor((_variant_t)(LONG)pButton->GetHotTextColor());
 	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotTextColor-tagButton))->SetOriginalValue((_variant_t)(LONG)pButton->GetHotTextColor());
