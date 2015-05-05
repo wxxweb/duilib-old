@@ -44,6 +44,9 @@ namespace DuiLib
 		virtual void SetInternVisible(bool bVisible = true) override;
 
 	public:
+		bool ExecuteJsCode(LPCTSTR pstrJsCode);
+
+	public:
 		static bool AddExternal(LPCTSTR _fn_name);
 
 		static bool RegisterCustomScheme(

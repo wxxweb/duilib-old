@@ -35,7 +35,7 @@ public:
 
 	virtual void OnAfterCreated(const TSTDSTR& _startup_url)
 	{
-		m_ui->SetInternVisible(true);
+		//m_ui->SetInternVisible(true);
 		if (NULL == m_pImpl) { return; }
 		m_pImpl->OnAfterCreated(_startup_url);
 	}
@@ -140,7 +140,7 @@ public:
 
 public:
 	CCefWebBrowser* const m_pCefWebBrowser;
-	CInternEventHandle* m_pEventHandler;	//浏览器事件处理
+	CInternEventHandle* m_pEventHandler;	// 浏览器事件处理
 	bool m_bInit;
 	bool m_bAutoNavi;	// 是否启动时打开默认页面
 
@@ -164,7 +164,6 @@ CWebBrowserCefUI::CImpl::~CImpl(void)
 	if (NULL == m_pEventHandler)
 	{
 		m_pEventHandler->UnregisterWebBrowser();
-		m_pEventHandler->SetImpl(NULL);
 		delete m_pEventHandler;
 	}
 
@@ -175,9 +174,7 @@ CWebBrowserCefUI::CImpl::~CImpl(void)
 CWebBrowserCefUI::CWebBrowserCefUI()
 	: m_impl(new CImpl(this))
 	
-{
-	m_bInternVisible = false;
-}
+{}
 
 
 CWebBrowserCefUI::~CWebBrowserCefUI()
@@ -221,34 +218,25 @@ void CWebBrowserCefUI::SetPos(RECT rc)
 		return;
 	}
 
-	HWND hWnd = m_impl->m_pCefWebBrowser->GetHwnd();
-	if (NULL == hWnd || FALSE == ::IsWindow(hWnd)) {
-		return;
-	}
-	::MoveWindow(hWnd, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, FALSE);
+	m_impl->m_pCefWebBrowser->MoveBrowser(
+		rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
 }
 
 void CWebBrowserCefUI::SetInternVisible(bool bVisible)
 {
-	const bool bPreInternVisible = m_bInternVisible;
 	CControlUI::SetInternVisible(bVisible);
 
 	if (false == m_impl->m_bInit || NULL == m_impl->m_pCefWebBrowser) {
 		return;
 	}
+
 	HWND hWnd = m_impl->m_pCefWebBrowser->GetHwnd();
-	if (NULL == hWnd || FALSE == ::IsWindow(hWnd)) {
-		return;
-	}
-	if (true == bVisible) {
-		if (bPreInternVisible != bVisible) {
-			::MoveWindow(hWnd, m_rcItem.left, m_rcItem.top,
-				m_rcItem.right - m_rcItem.left, 
-				m_rcItem.bottom - m_rcItem.top, FALSE);
+	if (NULL != hWnd && FALSE != ::IsWindow(hWnd)) {
+		if (true == bVisible) {
+			::ShowWindow(hWnd, SW_SHOWNORMAL);
+		} else {
+			::ShowWindow(hWnd, SW_HIDE);
 		}
-		::ShowWindow(hWnd, SW_SHOWNOACTIVATE);
-	} else {
-		::ShowWindow(hWnd, SW_HIDE);
 	}
 }
 
@@ -273,7 +261,6 @@ void CWebBrowserCefUI::DoInit()
 	if (true == m_impl->m_pCefWebBrowser->Create(
 		pszUrl, hWndParent, m_impl->m_pEventHandler))
 	{
-		::ShowWindow(m_impl->m_pCefWebBrowser->GetHwnd(), SW_HIDE);
 		for (CImpl::ExternalSet::iterator it = CImpl::sm_external_set.begin(),
 				itEnd = CImpl::sm_external_set.end(); itEnd != it; ++it)
 		{
@@ -335,6 +322,14 @@ void CWebBrowserCefUI::SetWebBrowserEventHandler( CWebBrowserEventHandler* pEven
 	}
 }
 
+bool CWebBrowserCefUI::ExecuteJsCode(LPCTSTR pstrJsCode)
+{
+	if (NULL == m_impl->m_pCefWebBrowser) {
+		return false;
+	}
+	return m_impl->m_pCefWebBrowser->ExecuteJsCode(pstrJsCode);
+}
+
 bool CWebBrowserCefUI::AddExternal(LPCTSTR _fn_name)
 {
 	if (NULL == _fn_name || TEXT('\0') == _fn_name[0]) {
@@ -353,6 +348,7 @@ bool CWebBrowserCefUI::RegisterCustomScheme(
 {
 	return CCefWebBrowser::RegisterCustomScheme(_scheme_name, _handler);
 }
+
 
 }; // namespace DuiLib
 
