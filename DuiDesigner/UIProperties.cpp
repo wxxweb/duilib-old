@@ -1438,23 +1438,23 @@ void CUIProperties::ShowWindowProperty(CControlUI* pControl)
 	pPropForm->GetSubItem(tagBkTrans-tagWindow)->SetOriginalValue((_variant_t)pForm->GetBackgroundTransparent());
 
 	// tagDefaultFontColor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagDefaultFontColor-tagWindow))->SetColor((_variant_t)(LONG)(pForm->GetDefaultFontColor()));
+	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagDefaultFontColor-tagWindow))->SetColor(MAKECOLORREF(pForm->GetDefaultFontColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagDefaultFontColor-tagWindow))->SetOriginalValue((_variant_t)(LONG)(pForm->GetDefaultFontColor()));
 
 	// tagSelectedFontColor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagSelectedFontColor-tagWindow))->SetColor((_variant_t)(LONG)(pForm->GetDefaultSelectedFontColor()));
+	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagSelectedFontColor-tagWindow))->SetColor(MAKECOLORREF(pForm->GetDefaultSelectedFontColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagSelectedFontColor-tagWindow))->SetOriginalValue((_variant_t)(LONG)(pForm->GetDefaultSelectedFontColor()));
 
 	// tagDisabledFontColor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagDisabledFontColor-tagWindow))->SetColor((_variant_t)(LONG)(pForm->GetDefaultDisabledFontColor()));
+	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagDisabledFontColor-tagWindow))->SetColor(MAKECOLORREF(pForm->GetDefaultDisabledFontColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagDisabledFontColor-tagWindow))->SetOriginalValue((_variant_t)(LONG)(pForm->GetDefaultDisabledFontColor()));
 
 	// tagLinkFontColor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagLinkFontColor-tagWindow))->SetColor((_variant_t)(LONG)(pForm->GetDefaultLinkFontColor()));
+	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagLinkFontColor-tagWindow))->SetColor(MAKECOLORREF(pForm->GetDefaultLinkFontColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagLinkFontColor-tagWindow))->SetOriginalValue((_variant_t)(LONG)(pForm->GetDefaultLinkFontColor()));
 
 	// tagLinkHoverFontColor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagLinkHoverFontColor-tagWindow))->SetColor((_variant_t)(LONG)(pForm->GetDefaultLinkHoverFontColor()));
+	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagLinkHoverFontColor-tagWindow))->SetColor(MAKECOLORREF(pForm->GetDefaultLinkHoverFontColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropForm->GetSubItem(tagLinkHoverFontColor-tagWindow))->SetOriginalValue((_variant_t)(LONG)(pForm->GetDefaultLinkHoverFontColor()));
 
 	pPropForm->Show(TRUE,FALSE);
@@ -1530,16 +1530,16 @@ void CUIProperties::ShowControlProperty(CControlUI* pControl)
 	pPropControl->GetSubItem(tagBkImage-tagControl)->SetValue((_variant_t)pControl->GetBkImage());
 	pPropControl->GetSubItem(tagBkImage-tagControl)->SetOriginalValue((_variant_t)pControl->GetBkImage());
 	//bkcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropControl->GetSubItem(tagBkColor-tagControl))->SetColor((_variant_t)(LONG)(pControl->GetBkColor()));
+	static_cast<CMFCPropertyGridColor32Property*>(pPropControl->GetSubItem(tagBkColor-tagControl))->SetColor(MAKECOLORREF(pControl->GetBkColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropControl->GetSubItem(tagBkColor-tagControl))->SetOriginalValue((_variant_t)(LONG)(pControl->GetBkColor()));
 	//bkcolor2
-	static_cast<CMFCPropertyGridColor32Property*>(pPropControl->GetSubItem(tagBkColor2-tagControl))->SetColor((_variant_t)(LONG)(pControl->GetBkColor2()));
+	static_cast<CMFCPropertyGridColor32Property*>(pPropControl->GetSubItem(tagBkColor2-tagControl))->SetColor(MAKECOLORREF(pControl->GetBkColor2()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropControl->GetSubItem(tagBkColor2-tagControl))->SetOriginalValue((_variant_t)(LONG)(pControl->GetBkColor2()));
 	//bordercolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropControl->GetSubItem(tagBorderColor-tagControl))->SetColor((_variant_t)(LONG)(pControl->GetBorderColor()));
+	static_cast<CMFCPropertyGridColor32Property*>(pPropControl->GetSubItem(tagBorderColor-tagControl))->SetColor(MAKECOLORREF(pControl->GetBorderColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropControl->GetSubItem(tagBorderColor-tagControl))->SetOriginalValue((_variant_t)(LONG)(pControl->GetBorderColor()));
 	//focusbordercolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropControl->GetSubItem(tagFocusBorderColor-tagControl))->SetColor((_variant_t)(LONG)(pControl->GetFocusBorderColor()));
+	static_cast<CMFCPropertyGridColor32Property*>(pPropControl->GetSubItem(tagFocusBorderColor-tagControl))->SetColor(MAKECOLORREF(pControl->GetFocusBorderColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropControl->GetSubItem(tagFocusBorderColor-tagControl))->SetOriginalValue((_variant_t)(LONG)(pControl->GetFocusBorderColor()));
 	//bordersize
 	pPropControl->GetSubItem(tagBorderSize-tagControl)->SetValue((_variant_t)(LONG)pControl->GetBorderSize());
@@ -1608,10 +1608,10 @@ void CUIProperties::ShowLabelProperty(CControlUI* pControl)
 	pPropLabel->GetSubItem(tagAlign-tagLabel)->SetValue((_variant_t)strStyle);
 	pPropLabel->GetSubItem(tagAlign-tagLabel)->SetOriginalValue((_variant_t)strStyle);
 	//textcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropLabel->GetSubItem(tagTextColor-tagLabel))->SetColor((_variant_t)(LONG)(pLabel->GetTextColor()));
+	static_cast<CMFCPropertyGridColor32Property*>(pPropLabel->GetSubItem(tagTextColor-tagLabel))->SetColor(MAKECOLORREF(pLabel->GetTextColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropLabel->GetSubItem(tagTextColor-tagLabel))->SetOriginalValue((_variant_t)(LONG)(pLabel->GetTextColor()));
 	//disabledtextcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropLabel->GetSubItem(tagTextColor-tagLabel))->SetColor((_variant_t)(LONG)(pLabel->GetTextColor()));
+	static_cast<CMFCPropertyGridColor32Property*>(pPropLabel->GetSubItem(tagTextColor-tagLabel))->SetColor(MAKECOLORREF(pLabel->GetTextColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropLabel->GetSubItem(tagTextColor-tagLabel))->SetOriginalValue((_variant_t)(LONG)(pLabel->GetTextColor()));
 	//font
 	pPropLabel->GetSubItem(tagFont-tagLabel)->SetValue((_variant_t)(LONG)pLabel->GetFont());
@@ -1666,19 +1666,20 @@ void CUIProperties::ShowButtonProperty(CControlUI* pControl)
 	pPropButton->GetSubItem(tagDisabledImage-tagButton)->SetValue((_variant_t)pButton->GetDisabledImage());
 	pPropButton->GetSubItem(tagDisabledImage-tagButton)->SetOriginalValue((_variant_t)pButton->GetDisabledImage());
 	//hotbkcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotBkColor-tagButton))->SetColor((_variant_t)(LONG)pButton->GetHotBkColor());
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotBkColor-tagButton))->SetColor(MAKECOLORREF(pButton->GetHotBkColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotBkColor-tagButton))->SetOriginalValue((_variant_t)(LONG)pButton->GetHotBkColor());
 	//pushedbkcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagPushedBkColor-tagButton))->SetColor((_variant_t)(LONG)pButton->GetPushedBkColor());
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotBkColor-tagButton))->SetColor(MAKECOLORREF(pButton->GetHotBkColor()));
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagPushedBkColor-tagButton))->SetColor(MAKECOLORREF(pButton->GetPushedBkColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagPushedBkColor-tagButton))->SetOriginalValue((_variant_t)(LONG)pButton->GetPushedBkColor());
 	//hottextcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotTextColor-tagButton))->SetColor((_variant_t)(LONG)pButton->GetHotTextColor());
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotTextColor-tagButton))->SetColor(MAKECOLORREF(pButton->GetHotTextColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagHotTextColor-tagButton))->SetOriginalValue((_variant_t)(LONG)pButton->GetHotTextColor());
 	//pushedtextcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagPushedTextColor-tagButton))->SetColor((_variant_t)(LONG)pButton->GetPushedTextColor());
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagPushedTextColor-tagButton))->SetColor(MAKECOLORREF(pButton->GetPushedTextColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagPushedTextColor-tagButton))->SetOriginalValue((_variant_t)(LONG)pButton->GetPushedTextColor());
 	//focusedtextcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagFocusedTextColor-tagButton))->SetColor((_variant_t)(LONG)pButton->GetFocusedTextColor());
+	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagFocusedTextColor-tagButton))->SetColor(MAKECOLORREF(pButton->GetFocusedTextColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropButton->GetSubItem(tagFocusedTextColor-tagButton))->SetOriginalValue((_variant_t)(LONG)pButton->GetFocusedTextColor());
 	
 	pPropButton->Show(TRUE,FALSE);
@@ -1717,7 +1718,7 @@ void CUIProperties::ShowEditProperty(CControlUI* pControl)
 	pPropEdit->GetSubItem(tagMaxChar-tagEdit)->SetValue((_variant_t)(LONG)pEdit->GetMaxChar());
 	pPropEdit->GetSubItem(tagMaxChar-tagEdit)->SetOriginalValue((_variant_t)(LONG)pEdit->GetMaxChar());
 	//nativebkcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropEdit->GetSubItem(tagNativeBKColor-tagEdit))->SetColor((_variant_t)(LONG)pEdit->GetNativeEditBkColor());
+	static_cast<CMFCPropertyGridColor32Property*>(pPropEdit->GetSubItem(tagNativeBKColor-tagEdit))->SetColor(MAKECOLORREF(pEdit->GetNativeEditBkColor()));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropEdit->GetSubItem(tagNativeBKColor-tagEdit))->SetOriginalValue((_variant_t)(LONG)pEdit->GetNativeEditBkColor());
 
 	pPropEdit->Show(TRUE,FALSE);
@@ -2147,31 +2148,31 @@ void CUIProperties::ShowItemProperty( CControlUI* pControl )
 	pPropItem->GetSubItem(tagItemAlign-tagItem)->SetValue((_variant_t)strStyle);
 	pPropItem->GetSubItem(tagItemAlign-tagItem)->SetOriginalValue((_variant_t)strStyle);
 	//itemtextcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemTextColor-tagItem))->SetColor((_variant_t)(LONG)pListInfo->dwTextColor);
+	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemTextColor-tagItem))->SetColor(MAKECOLORREF(pListInfo->dwTextColor));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemTextColor-tagItem))->SetOriginalValue((_variant_t)(LONG)pListInfo->dwTextColor);
 	//itembkcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemBkColor-tagItem))->SetColor((_variant_t)(LONG)pListInfo->dwBkColor);
+	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemBkColor-tagItem))->SetColor(MAKECOLORREF(pListInfo->dwBkColor));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemBkColor-tagItem))->SetOriginalValue((_variant_t)(LONG)pListInfo->dwBkColor);
 	//itemselectedtextcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemSelectedTextColor-tagItem))->SetColor((_variant_t)(LONG)pListInfo->dwSelectedTextColor);
+	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemSelectedTextColor-tagItem))->SetColor(MAKECOLORREF(pListInfo->dwSelectedTextColor));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemSelectedTextColor-tagItem))->SetOriginalValue((_variant_t)(LONG)pListInfo->dwSelectedTextColor);
 	//itemselectedbkcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemSelectedBkColor-tagItem))->SetColor((_variant_t)(LONG)pListInfo->dwSelectedBkColor);
+	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemSelectedBkColor-tagItem))->SetColor(MAKECOLORREF(pListInfo->dwSelectedBkColor));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemSelectedBkColor-tagItem))->SetOriginalValue((_variant_t)(LONG)pListInfo->dwSelectedBkColor);
 	//itemhottextcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemHotTextColor-tagItem))->SetColor((_variant_t)(LONG)pListInfo->dwHotTextColor);
+	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemHotTextColor-tagItem))->SetColor(MAKECOLORREF(pListInfo->dwHotTextColor));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemHotTextColor-tagItem))->SetOriginalValue((_variant_t)(LONG)pListInfo->dwHotTextColor);
 	//itemhotbkcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemHotBkColor-tagItem))->SetColor((_variant_t)(LONG)pListInfo->dwHotBkColor);
+	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemHotBkColor-tagItem))->SetColor(MAKECOLORREF(pListInfo->dwHotBkColor));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemHotBkColor-tagItem))->SetOriginalValue((_variant_t)(LONG)pListInfo->dwHotBkColor);
 	//itemdisabledtextcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemDisabledTextColor-tagItem))->SetColor((_variant_t)(LONG)pListInfo->dwDisabledTextColor);
+	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemDisabledTextColor-tagItem))->SetColor(MAKECOLORREF(pListInfo->dwDisabledTextColor));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemDisabledTextColor-tagItem))->SetOriginalValue((_variant_t)(LONG)pListInfo->dwDisabledTextColor);
 	//itemdisabledbkcolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemDisabledBkColor-tagItem))->SetColor((_variant_t)(LONG)pListInfo->dwDisabledBkColor);
+	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemDisabledBkColor-tagItem))->SetColor(MAKECOLORREF(pListInfo->dwDisabledBkColor));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemDisabledBkColor-tagItem))->SetOriginalValue((_variant_t)(LONG)pListInfo->dwDisabledBkColor);
 	//itemlinecolor
-	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemLineColor-tagItem))->SetColor((_variant_t)(LONG)pListInfo->dwLineColor);
+	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemLineColor-tagItem))->SetColor(MAKECOLORREF(pListInfo->dwLineColor));
 	static_cast<CMFCPropertyGridColor32Property*>(pPropItem->GetSubItem(tagItemLineColor-tagItem))->SetOriginalValue((_variant_t)(LONG)pListInfo->dwLineColor);
 	//itemfont
 	pPropItem->GetSubItem(tagItemFont-tagItem)->SetValue((_variant_t)(LONG)pListInfo->nFont);

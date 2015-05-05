@@ -92,8 +92,10 @@
 #define UIDESIGNER_VERSION _T("1.0.6.158")
 #define UIDESIGNER_VERSION_CHECK_URL _T("http://www.taxue.org/uidesigner-version.txt")
 
-#define MAKECOLORREF(argb) ((COLORREF)((argb)&0x11000000)| \
-	(((argb)&0x00000011)<<16)|((argb)&0x00001100)|((argb)&0x00110000>>16))
+// 将 0xAARRGGBB 形式的 ARGB 值转换成 0xAABBGGRR 形式的 COLORREF 值
+#define MAKECOLORREF(argb) \
+	((COLORREF)(((DWORD)(argb)&0xFF000000)|((DWORD)((argb)&0x000000FF)<<16)| \
+	((DWORD)(argb)&0x0000FF00)|(((DWORD)(argb)&0x00FF0000)>>16)))
 
 //UI type
 enum UIType
