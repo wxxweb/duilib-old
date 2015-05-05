@@ -434,4 +434,9 @@ void WindowImplBase::OnClick(DuiLib::TNotifyUI& msg)
 
 }
 
+CPaintManagerUI& WindowImplBase::GetPaintManager()
+{
+	return m_PaintManager;
+}
+
 }
