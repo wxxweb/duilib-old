@@ -92,6 +92,9 @@
 #define UIDESIGNER_VERSION _T("1.0.6.158")
 #define UIDESIGNER_VERSION_CHECK_URL _T("http://www.taxue.org/uidesigner-version.txt")
 
+#define MAKECOLORREF(argb) ((COLORREF)((argb)&0x11000000)| \
+	(((argb)&0x00000011)<<16)|((argb)&0x00001100)|((argb)&0x00110000>>16))
+
 //UI type
 enum UIType
 {

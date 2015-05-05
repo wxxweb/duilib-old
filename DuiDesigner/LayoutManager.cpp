@@ -10,13 +10,13 @@ using DuiLib::IListOwnerUI;
 //CWindowUI
 
 CWindowUI::CWindowUI()
-:m_nOpacity(255),
-m_bAlphaBackground(false),
-m_dwDefaultDisabledFontColor(0xFFA7A6AA),
-m_dwDefaultFontColor(0xFF000000),
-m_dwDefaultLinkFontColor(0xFF0000FF),
-m_dwDefaultLinkHoverFontColor(0xFFD3215F),
-m_dwDefaultSelectedFontColor(0xFFBAE4FF)
+// :m_nOpacity(255),
+// m_bAlphaBackground(false),
+// m_dwDefaultDisabledFontColor(0xFFA7A6AA),
+// m_dwDefaultFontColor(0xFF000000),
+// m_dwDefaultLinkFontColor(0xFF0000FF),
+// m_dwDefaultLinkHoverFontColor(0xFFD3215F),
+// m_dwDefaultSelectedFontColor(0xFFBAE4FF)
 {
 }
 
@@ -257,79 +257,72 @@ void CWindowUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 
 void CWindowUI::SetBackgroundTransparent( bool bTrans )
 {
-	m_bAlphaBackground=bTrans;
 	m_pManager->SetBackgroundTransparent(bTrans);
 }
 
 bool CWindowUI::GetBackgroundTransparent() const
 {
-	return m_bAlphaBackground;
+	return m_pManager->GetBackgroundTransparent();
 }
 
 void CWindowUI::SetDefaultDisabledFontColor( DWORD dwColor )
 {
-	m_dwDefaultDisabledFontColor=dwColor;
 	m_pManager->SetDefaultDisabledColor(dwColor);
 }
 
 DWORD CWindowUI::GetDefaultDisabledFontColor() const
 {
-	return m_dwDefaultDisabledFontColor;
+	return m_pManager->GetDefaultDisabledColor();
 }
 
 void CWindowUI::SetDefaultFontColor( DWORD dwColor )
 {
-	m_dwDefaultFontColor=dwColor;
 	m_pManager->SetDefaultFontColor(dwColor);
 }
 
 DWORD CWindowUI::GetDefaultFontColor() const
 {
-	return m_dwDefaultFontColor;
+	return m_pManager->GetDefaultFontColor();
 }
 
 void CWindowUI::SetDefaultLinkFontColor( DWORD dwColor )
 {
-	m_dwDefaultLinkFontColor=dwColor;
 	m_pManager->SetDefaultLinkFontColor(dwColor);
 }
 
 DWORD CWindowUI::GetDefaultLinkFontColor() const
 {
-	return m_dwDefaultLinkFontColor;
+	return m_pManager->GetDefaultLinkFontColor();
 }
 
 void CWindowUI::SetDefaultLinkHoverFontColor( DWORD dwColor )
 {
-	m_dwDefaultLinkHoverFontColor=dwColor;
 	m_pManager->SetDefaultLinkHoverFontColor(dwColor);
 }
 
 DWORD CWindowUI::GetDefaultLinkHoverFontColor() const
 {
-	return m_dwDefaultLinkHoverFontColor;
+	return m_pManager->GetDefaultLinkHoverFontColor();
 }
 
 void CWindowUI::SetDefaultSelectedFontColor( DWORD dwColor )
 {
-	m_dwDefaultSelectedFontColor=dwColor;
 	m_pManager->SetDefaultSelectedBkColor(dwColor);
 }
 
 DWORD CWindowUI::GetDefaultSelectedFontColor() const
 {
-	return m_dwDefaultSelectedFontColor;
+	return m_pManager->GetDefaultSelectedBkColor();
 }
 
 void CWindowUI::SetAlpha( int nOpacity )
 {
-	m_nOpacity=nOpacity;
 	m_pManager->SetTransparent(nOpacity);
 }
 
 int CWindowUI::GetAlpha() const
 {
-	return m_nOpacity;
+	return m_pManager->GetTransparent();
 }
 
 //////////////////////////////////////////////////////////////////////////

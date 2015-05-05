@@ -185,6 +185,7 @@ public:
     void SetMaxInfo(int cx, int cy);
 	int GetTransparent() const;
     void SetTransparent(int nOpacity);
+	bool GetBackgroundTransparent() const;
     void SetBackgroundTransparent(bool bTrans);
     bool IsShowUpdateRect() const;
     void SetShowUpdateRect(bool show);

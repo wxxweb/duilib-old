@@ -447,6 +447,11 @@ void CPaintManagerUI::SetTransparent(int nOpacity)
     }
 }
 
+bool CPaintManagerUI::GetBackgroundTransparent() const
+{
+	return m_bAlphaBackground;
+}
+
 void CPaintManagerUI::SetBackgroundTransparent(bool bTrans)
 {
     m_bAlphaBackground = bTrans;

@@ -44,35 +44,35 @@ public:
 	void SetPos(RECT rc);
 
 public:
-	void			SetAlpha(int nOpacity);
-	int			GetAlpha() const;
+	void	SetAlpha(int nOpacity);
+	int		GetAlpha() const;
 
-	void			SetBackgroundTransparent(bool bTrans);
-	bool			GetBackgroundTransparent() const;
+	void	SetBackgroundTransparent(bool bTrans);
+	bool	GetBackgroundTransparent() const;
 
-	void			SetDefaultFontColor(DWORD dwColor);
+	void	SetDefaultFontColor(DWORD dwColor);
 	DWORD	GetDefaultFontColor() const;
 
-	void			SetDefaultSelectedFontColor(DWORD dwColor);
+	void	SetDefaultSelectedFontColor(DWORD dwColor);
 	DWORD	GetDefaultSelectedFontColor() const;
 
-	void			SetDefaultDisabledFontColor(DWORD dwColor);
+	void	SetDefaultDisabledFontColor(DWORD dwColor);
 	DWORD	GetDefaultDisabledFontColor() const;
 
-	void			SetDefaultLinkFontColor(DWORD dwColor);
+	void	SetDefaultLinkFontColor(DWORD dwColor);
 	DWORD	GetDefaultLinkFontColor() const;
 
-	void			SetDefaultLinkHoverFontColor(DWORD dwColor);
+	void	SetDefaultLinkHoverFontColor(DWORD dwColor);
 	DWORD	GetDefaultLinkHoverFontColor() const;
 
 private:
-	int			m_nOpacity;
-	bool			m_bAlphaBackground;
-	DWORD	m_dwDefaultFontColor;
-	DWORD	m_dwDefaultDisabledFontColor;
-	DWORD	m_dwDefaultLinkFontColor;
-	DWORD	m_dwDefaultLinkHoverFontColor;
-	DWORD	m_dwDefaultSelectedFontColor;
+// 	int		m_nOpacity;
+// 	bool	m_bAlphaBackground;
+// 	DWORD	m_dwDefaultFontColor;
+// 	DWORD	m_dwDefaultDisabledFontColor;
+// 	DWORD	m_dwDefaultLinkFontColor;
+// 	DWORD	m_dwDefaultLinkHoverFontColor;
+// 	DWORD	m_dwDefaultSelectedFontColor;
 };
 
 //////////////////////////////////////////////////////////////////////////
