@@ -5,7 +5,7 @@
 
 namespace DuiLib
 {
-	class CWebBrowserEventHandler
+	class UILIB_API CWebBrowserEventHandler
 	{
 	public:
 		virtual ~CWebBrowserEventHandler() = 0 {}

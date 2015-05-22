@@ -13,29 +13,16 @@
 namespace DuiLib
 {
 
-class CInternEventHandle: public ICefWebBrowserEventHandler
+class CInternEventHandler: public ICefWebBrowserEventHandler
 {
 public:
-	CInternEventHandle(CWebBrowserCefUI* _ui, ICefWebBrowserEventHandler* _impl)
+	CInternEventHandler(CWebBrowserCefUI* _ui, ICefWebBrowserEventHandler* _impl)
 		: m_ui(_ui), m_pImpl(_impl) {}
-	~CInternEventHandle(void) {}
+	~CInternEventHandler(void) {}
 
 public:
-	virtual bool RegisterWebBrowser(ICefWebBrowser* _cef_web_browser)
-	{
-		if (NULL == m_pImpl) { return false; }
-		return m_pImpl->RegisterWebBrowser(_cef_web_browser);
-	}
-
-	virtual void UnregisterWebBrowser(void)
-	{
-		if (NULL == m_pImpl) { return; }
-		m_pImpl->UnregisterWebBrowser();
-	}
-
 	virtual void OnAfterCreated(const TSTDSTR& _startup_url)
 	{
-		//m_ui->SetInternVisible(true);
 		if (NULL == m_pImpl) { return; }
 		m_pImpl->OnAfterCreated(_startup_url);
 	}
@@ -60,7 +47,10 @@ public:
 
 	virtual void OnLoadEnd(const TSTDSTR& _url, bool _is_main)
 	{
-		if (NULL == m_pImpl) { return; }
+		if (NULL == m_pImpl) {
+			m_ui->SetInternVisible(true);
+			return;
+		}
 		m_pImpl->OnLoadEnd(_url, _is_main);
 	}
 
@@ -135,46 +125,101 @@ public:
 	typedef std::set<TSTDSTR> ExternalSet;
 
 public:
-	CImpl(CWebBrowserCefUI* _parent);
+	CImpl(void);
 	~CImpl(void);
 
 public:
+	CCefWebBrowserWnd* m_pWindow;
 	CCefWebBrowser* const m_pCefWebBrowser;
-	CInternEventHandle* m_pEventHandler;	// 浏览器事件处理
+	CInternEventHandler* m_pEventHandler;	// 浏览器事件处理
 	bool m_bInit;
 	bool m_bAutoNavi;	// 是否启动时打开默认页面
 
 	static ExternalSet sm_external_set;
 };
 
+
+class CCefWebBrowserWnd : public CWindowWnd
+{
+public:
+	CCefWebBrowserWnd();
+
+	void Init(CWebBrowserCefUI* pOwner);
+
+	LPCTSTR GetWindowClassName() const;
+	void OnFinalMessage(HWND hWnd);
+	LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+protected:
+	CWebBrowserCefUI* m_pOwner;
+	bool m_bInit;
+};
+
+
+CCefWebBrowserWnd::CCefWebBrowserWnd() : m_pOwner(NULL), m_bInit(false)
+{
+}
+
+void CCefWebBrowserWnd::Init(CWebBrowserCefUI* pOwner)
+{
+	m_pOwner = pOwner;
+	RECT rcPos = m_pOwner->GetPos();
+	this->Create(m_pOwner->GetManager()->GetPaintWindow(),
+		TEXT("CefWebBrowserWnd"), WS_CHILD, 0, rcPos);
+	SetClassLongPtr(m_hWnd, GCL_HBRBACKGROUND, (LONG)::GetStockObject(WHITE_BRUSH));
+	m_bInit = true;
+}
+
+
+LPCTSTR CCefWebBrowserWnd::GetWindowClassName() const
+{
+	return _T("CefWebBrowserWnd");
+}
+
+
+void CCefWebBrowserWnd::OnFinalMessage(HWND /*hWnd*/)
+{
+	m_pOwner->Invalidate();
+	m_pOwner->m_impl->m_pWindow = NULL;
+	delete this;
+}
+
+LRESULT CCefWebBrowserWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	return CWindowWnd::HandleMessage(uMsg, wParam, lParam);
+}
+
+
 CWebBrowserCefUI::CImpl::ExternalSet CWebBrowserCefUI::CImpl::sm_external_set;
 
-CWebBrowserCefUI::CImpl::CImpl(CWebBrowserCefUI* _parent)
-	: m_pCefWebBrowser(new CCefWebBrowser())
-	, m_pEventHandler(new CInternEventHandle(_parent, NULL))
+
+CWebBrowserCefUI::CImpl::CImpl(void)
+	: m_pWindow(new CCefWebBrowserWnd)
+	, m_pCefWebBrowser(new CCefWebBrowser())
+	, m_pEventHandler(NULL)
 	, m_bInit(false)
 	, m_bAutoNavi(false)
 {
-	m_pEventHandler->RegisterWebBrowser(m_pCefWebBrowser);
+	
 }
 
 
 CWebBrowserCefUI::CImpl::~CImpl(void)
 {
-	if (NULL == m_pEventHandler)
-	{
-		m_pEventHandler->UnregisterWebBrowser();
+	if (NULL == m_pEventHandler) {
 		delete m_pEventHandler;
 	}
 
 	delete m_pCefWebBrowser;
+	delete m_pWindow;
 }
 
 
 CWebBrowserCefUI::CWebBrowserCefUI()
-	: m_impl(new CImpl(this))
-	
-{}
+	: m_impl(new CImpl)
+{
+	m_impl->m_pEventHandler = new CInternEventHandler(this, NULL);
+}
 
 
 CWebBrowserCefUI::~CWebBrowserCefUI()
@@ -214,12 +259,16 @@ void CWebBrowserCefUI::SetPos(RECT rc)
 {
 	CControlUI::SetPos(rc);
 
-	if (NULL == m_impl->m_pCefWebBrowser) {
-		return;
-	}
+	RECT rcPos = this->GetPos();
+	HWND hwnd = m_impl->m_pWindow->GetHWND();
+	::SetWindowPos(hwnd, NULL, 
+		rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+		rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);  
 
-	m_impl->m_pCefWebBrowser->MoveBrowser(
-		rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
+	::GetWindowRect(hwnd, &rcPos);
+
+	m_impl->m_pCefWebBrowser->MoveBrowser(0, 0);
+	m_impl->m_pCefWebBrowser->ChangeBrowserSize(rc.right - rc.left, rc.bottom - rc.top);
 }
 
 void CWebBrowserCefUI::SetInternVisible(bool bVisible)
@@ -230,13 +279,14 @@ void CWebBrowserCefUI::SetInternVisible(bool bVisible)
 		return;
 	}
 
+	HWND hWndParent = m_impl->m_pWindow->GetHWND();
 	HWND hWnd = m_impl->m_pCefWebBrowser->GetHwnd();
-	if (NULL != hWnd && FALSE != ::IsWindow(hWnd)) {
-		if (true == bVisible) {
-			::ShowWindow(hWnd, SW_SHOWNORMAL);
-		} else {
-			::ShowWindow(hWnd, SW_HIDE);
-		}
+	if (true == bVisible) {
+		::ShowWindow(hWndParent, SW_SHOW);
+		::ShowWindow(hWnd, SW_SHOW);
+	} else {
+		::ShowWindow(hWndParent, SW_SHOW);
+		::ShowWindow(hWnd, SW_HIDE);
 	}
 }
 
@@ -249,17 +299,16 @@ void CWebBrowserCefUI::DoInit()
 	} else {
 		m_impl->m_bInit = true;
 	}
-	if (NULL == m_impl->m_pCefWebBrowser) {
-		return;
-	}
+
+	m_impl->m_pWindow->Init(this);
 
 	LPCTSTR pszUrl = TEXT("about:blank");
 	if (true == m_bAutoNavi && false == m_sHomePage.IsEmpty()) {
 		pszUrl = m_sHomePage.GetData();
 	}
-	HWND hWndParent = m_pManager->GetPaintWindow();
+	
 	if (true == m_impl->m_pCefWebBrowser->Create(
-		pszUrl, hWndParent, m_impl->m_pEventHandler))
+		pszUrl, m_impl->m_pWindow->GetHWND(), m_impl->m_pEventHandler))
 	{
 		for (CImpl::ExternalSet::iterator it = CImpl::sm_external_set.begin(),
 				itEnd = CImpl::sm_external_set.end(); itEnd != it; ++it)
@@ -268,6 +317,13 @@ void CWebBrowserCefUI::DoInit()
 		}
 	}
 }
+
+
+void CWebBrowserCefUI::DoEvent(TEventUI& event)
+{
+	CControlUI::DoEvent(event);
+}
+
 
 void CWebBrowserCefUI::Navigate( LPCTSTR lpszUrl )
 {
@@ -312,13 +368,23 @@ void CWebBrowserCefUI::NavigateHomePage()
 
 void CWebBrowserCefUI::SetWebBrowserEventHandler( CWebBrowserEventHandler* pEventHandler )
 {
-	if (NULL != pEventHandler && NULL != m_impl->m_pEventHandler &&
+	if (NULL == m_impl->m_pEventHandler) {
+		return;
+	}
+	
+	if (NULL != pEventHandler &&
 		NULL != pEventHandler->GetInterface(DUI_WEB_BROWSER_EVENT_HANDLER_CEF))
 	{
 		CWebBrowserEventHandlerCEF* pEventHandlerCef = 
 			static_cast<CWebBrowserEventHandlerCEF*>(pEventHandler);
-		pEventHandlerCef->RegisterWebBrowser(this);
+		pEventHandlerCef->RegisterControl(this);
 		m_impl->m_pEventHandler->SetImpl(pEventHandlerCef);
+	}
+	else if (NULL == pEventHandler) {
+		m_impl->m_pEventHandler->SetImpl(NULL);
+	}
+	else {
+		ASSERT(false);
 	}
 }
 

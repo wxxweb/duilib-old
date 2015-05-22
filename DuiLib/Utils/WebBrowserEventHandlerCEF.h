@@ -11,67 +11,48 @@ namespace DuiLib
 	class CWebBrowserCefUI;
 
 
-	class CWebBrowserEventHandlerCEF
+	class UILIB_API CWebBrowserEventHandlerCEF
 		: public ICefWebBrowserEventHandler
 		, public CWebBrowserEventHandler
 	{
 	public:
-		CWebBrowserEventHandlerCEF() {}
-		virtual ~CWebBrowserEventHandlerCEF() {}
+		CWebBrowserEventHandlerCEF();
+		virtual ~CWebBrowserEventHandlerCEF();
 
 	public:
-		virtual PVOID GetInterface(LPCTSTR _name)
-		{
-			if ( _tcscmp(_name, DUI_WEB_BROWSER_EVENT_HANDLER_CEF) == 0 ) {
-				return static_cast<CWebBrowserEventHandlerCEF*>(this);
-			}
-			return NULL;
-		}
+		virtual PVOID GetInterface(LPCTSTR _name);
 
-		virtual bool RegisterWebBrowser(CWebBrowserCefUI* _web_browser_cef_ui)
-		{ return false; }
+		virtual bool RegisterControl(CWebBrowserCefUI* _control);
 
-		virtual bool RegisterWebBrowser(ICefWebBrowser* _cef_web_browser)
-		{ return false; }
-
-		virtual void UnregisterWebBrowser(void) {}
-
-		virtual void OnAfterCreated(const TSTDSTR& _startup_url) {}
-
-		virtual void OnBeforeClose(void) {}
-
-		virtual void OnContextCreated(const TSTDSTR& _url, bool _is_main) {}
-
-		virtual void OnLoadStart(const TSTDSTR& _url, bool _is_main) {}
-
-		virtual void OnLoadEnd(const TSTDSTR& _url, bool _is_main) {}
-
+	public: // ICefWebBrowserEventHandler
+		virtual void OnAfterCreated(const TSTDSTR& _startup_url);
+		virtual void OnBeforeClose(void);
+		virtual void OnContextCreated(const TSTDSTR& _url, bool _is_main);
+		virtual void OnLoadStart(const TSTDSTR& _url, bool _is_main);
+		virtual void OnLoadEnd(const TSTDSTR& _url, bool _is_main);
 		virtual bool OnLoadError(
 			/* [out] */ TSTDSTR& _error_text,
 			/* [in] */ const TSTDSTR& _failed_url,
 			/* [in] */ DWORD _error_code
-			) { return false; }
-
+			);
 		virtual void OnNavStateChange(
 			const TSTDSTR& _url,
 			bool canGoBack,
 			bool canGoForward
-			) {}
-
-		virtual void OnAddressChange(const TSTDSTR& _url) {}
-
-		virtual bool OnJsInvoke(LPCTSTR _fn_name, LPCTSTR _args)
-		{ return false; }
-
-		virtual void OnConsoleMessage(const TSTDSTR& _msg) {}
-
+			);
+		virtual void OnAddressChange(const TSTDSTR& _url);
+		virtual bool OnJsInvoke(LPCTSTR _fn_name, LPCTSTR _args);
+		virtual void OnConsoleMessage(const TSTDSTR& _msg);
 		virtual void OnUncaughtException(
 			const TSTDSTR& _msg,
 			const TSTDSTR& _file_name,
 			const TSTDSTR& _src_line,
 			int _line_num,
 			int _column
-			) {}
+			);
+
+	protected:
+		DuiLib::CWebBrowserCefUI* m_control;
 	};
 }
 

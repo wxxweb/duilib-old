@@ -40,6 +40,7 @@ namespace DuiLib
 		virtual LPVOID GetInterface( LPCTSTR pstrName ) override;
 		virtual void SetPos(RECT rc) override;
 		virtual void DoInit() override;
+		virtual void DoEvent(TEventUI& event);
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 		virtual void SetInternVisible(bool bVisible = true) override;
 
