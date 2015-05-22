@@ -320,13 +320,10 @@ UINT CWindowWnd::ShowModal()
 UINT CWindowWnd::RunModalLoop(void)
 {
 	UINT nRet = IDCANCEL;
-	HWND hWndParent = ::GetParent(m_hWnd);
-	bool bShowIdle = !(::GetWindowLongPtr(m_hWnd, GWL_STYLE) & WS_VISIBLE);
-	MSG msg = { 0 };
+	MSG msg = {0};
 	m_bContinueModal = true;
 
-	if (false == bShowIdle)
-	{
+	if (::GetWindowLongPtr(m_hWnd, GWL_STYLE) & WS_VISIBLE) {
 		::ShowWindow(m_hWnd, SW_SHOWNORMAL);
 		::UpdateWindow(m_hWnd);
 	}
@@ -336,14 +333,14 @@ UINT CWindowWnd::RunModalLoop(void)
 
 		// PeekMessage 可避免在线程中创建子窗口使父窗口死锁
 		while (FALSE == ::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-			if (WM_QUIT == msg.message) {
+			if (WM_QUIT == msg.message && msg.hwnd == m_hWnd) {
 				return nRet;
 			}
 			::Sleep(10);
 			continue;
 		}
 
-		if (WM_CLOSE == msg.message) {
+		if (WM_CLOSE == msg.message && msg.hwnd == m_hWnd) {
 			nRet = msg.wParam;
 			::DestroyWindow(m_hWnd);
 		}
@@ -351,15 +348,6 @@ UINT CWindowWnd::RunModalLoop(void)
 		if(!CPaintManagerUI::TranslateMessage(&msg)) {
 			::TranslateMessage(&msg);
 			::DispatchMessage(&msg);
-		}
-			
-		// show the window when certain special messages rec'd
-		if (bShowIdle &&
-			(msg.message == WM_SYSTIMER || msg.message == WM_SYSKEYDOWN))
-		{
-			::ShowWindow(m_hWnd, SW_SHOWNORMAL);
-			::UpdateWindow(m_hWnd);
-			bShowIdle = false;
 		}
 
 		if (!this->IsContinueModal()) {
