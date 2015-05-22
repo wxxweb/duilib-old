@@ -5,6 +5,9 @@
 #pragma comment(lib, "shlwapi.lib")
 #endif
 
+
+#define WM_SYSTIMER		0x118	// 未公开消息
+
 namespace DuiLib {
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -210,7 +213,11 @@ void CNotifyPump::NotifyPump(TNotifyUI& msg)
 
 //////////////////////////////////////////////////////////////////////////
 ///
-CWindowWnd::CWindowWnd() : m_hWnd(NULL), m_OldWndProc(::DefWindowProc), m_bSubclassed(false)
+CWindowWnd::CWindowWnd()
+	: m_hWnd(NULL)
+	, m_OldWndProc(::DefWindowProc)
+	, m_bSubclassed(false)
+	, m_bContinueModal(false)
 {
 }
 
@@ -284,28 +291,100 @@ void CWindowWnd::ShowWindow(bool bShow /*= true*/, bool bTakeFocus /*= false*/)
 
 UINT CWindowWnd::ShowModal()
 {
-    ASSERT(::IsWindow(m_hWnd));
-    UINT nRet = 0;
-    HWND hWndParent = GetWindowOwner(m_hWnd);
-    ::ShowWindow(m_hWnd, SW_SHOWNORMAL);
-    ::EnableWindow(hWndParent, FALSE);
-    MSG msg = { 0 };
-    while( ::IsWindow(m_hWnd) && ::GetMessage(&msg, NULL, 0, 0) ) {
-        if( msg.message == WM_CLOSE && msg.hwnd == m_hWnd ) {
-            nRet = msg.wParam;
-            ::EnableWindow(hWndParent, TRUE);
-            ::SetFocus(hWndParent);
-        }
-        if( !CPaintManagerUI::TranslateMessage(&msg) ) {
-            ::TranslateMessage(&msg);
-            ::DispatchMessage(&msg);
-        }
-        if( msg.message == WM_QUIT ) break;
-    }
-    ::EnableWindow(hWndParent, TRUE);
-    ::SetFocus(hWndParent);
-    if( msg.message == WM_QUIT ) ::PostQuitMessage(msg.wParam);
-    return nRet;
+	ASSERT(::IsWindow(m_hWnd));
+	BOOL bEnableParent = FALSE;
+	HWND hWndParent = GetWindowOwner(m_hWnd);
+	if (hWndParent && hWndParent != ::GetDesktopWindow() && ::IsWindowEnabled(hWndParent))
+	{
+		::EnableWindow(hWndParent, FALSE);
+		bEnableParent = TRUE;
+	}
+
+	UINT nRet = this->RunModalLoop();
+
+	// hide the window before enabling the parent, etc.
+	if (m_hWnd != NULL) {
+		::SetWindowPos(m_hWnd, NULL, 0, 0, 0, 0, SWP_HIDEWINDOW|
+			SWP_NOSIZE|SWP_NOMOVE|SWP_NOACTIVATE|SWP_NOZORDER);
+	}
+	if (bEnableParent) {
+		::EnableWindow(hWndParent, TRUE);
+	}
+	if (hWndParent != NULL && ::GetActiveWindow() == m_hWnd) {
+		::SetActiveWindow(hWndParent);
+	}
+
+	return nRet;
+}
+
+UINT CWindowWnd::RunModalLoop(void)
+{
+	UINT nRet = IDCANCEL;
+	HWND hWndParent = ::GetParent(m_hWnd);
+	bool bShowIdle = !(::GetWindowLongPtr(m_hWnd, GWL_STYLE) & WS_VISIBLE);
+	MSG msg = { 0 };
+	m_bContinueModal = true;
+
+	if (false == bShowIdle)
+	{
+		::ShowWindow(m_hWnd, SW_SHOWNORMAL);
+		::UpdateWindow(m_hWnd);
+	}
+
+	for(;;) {
+		ASSERT(this->IsContinueModal());
+
+		// PeekMessage 可避免在线程中创建子窗口使父窗口死锁
+		while (FALSE == ::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+			if (WM_QUIT == msg.message) {
+				return nRet;
+			}
+			::Sleep(10);
+			continue;
+		}
+
+		if (WM_CLOSE == msg.message) {
+			nRet = msg.wParam;
+			::DestroyWindow(m_hWnd);
+		}
+
+		if(!CPaintManagerUI::TranslateMessage(&msg)) {
+			::TranslateMessage(&msg);
+			::DispatchMessage(&msg);
+		}
+			
+		// show the window when certain special messages rec'd
+		if (bShowIdle &&
+			(msg.message == WM_SYSTIMER || msg.message == WM_SYSKEYDOWN))
+		{
+			::ShowWindow(m_hWnd, SW_SHOWNORMAL);
+			::UpdateWindow(m_hWnd);
+			bShowIdle = false;
+		}
+
+		if (!this->IsContinueModal()) {
+			return nRet;
+		}
+	}
+
+	return nRet;
+}
+
+bool CWindowWnd::IsContinueModal() const
+{
+	return m_bContinueModal;
+}
+
+void CWindowWnd::EndModalLoop(UINT nResult)
+{
+	ASSERT(::IsWindow(m_hWnd));
+
+	// make sure a message goes through to exit the modal loop
+	if (true == m_bContinueModal)
+	{
+		m_bContinueModal = false;
+		this->PostMessage(WM_NULL);
+	}
 }
 
 void CWindowWnd::Close(UINT nRet)
@@ -412,7 +491,10 @@ LRESULT CALLBACK CWindowWnd::__WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
         pThis = static_cast<CWindowWnd*>(lpcs->lpCreateParams);
         pThis->m_hWnd = hWnd;
         ::SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LPARAM>(pThis));
-    } 
+    }
+	else if ( uMsg == WM_DESTROY ) {
+		::PostQuitMessage(0);
+	}
     else {
         pThis = reinterpret_cast<CWindowWnd*>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
         if( uMsg == WM_NCDESTROY && pThis != NULL ) {

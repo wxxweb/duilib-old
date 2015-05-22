@@ -76,6 +76,8 @@ public:
     void Unsubclass();
     void ShowWindow(bool bShow = true, bool bTakeFocus = true);
     UINT ShowModal();
+	bool IsContinueModal() const;
+	void EndModalLoop(UINT nResult);
     void Close(UINT nRet = IDOK);
     void CenterWindow();	// 居中，支持扩展屏幕
     void SetIcon(UINT nRes);
@@ -92,6 +94,8 @@ protected:
     virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
     virtual void OnFinalMessage(HWND hWnd);
 
+	UINT RunModalLoop(void);
+
     static LRESULT CALLBACK __WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     static LRESULT CALLBACK __ControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -99,6 +103,7 @@ protected:
     HWND m_hWnd;
     WNDPROC m_OldWndProc;
     bool m_bSubclassed;
+	bool m_bContinueModal;
 };
 
 } // namespace DuiLib
