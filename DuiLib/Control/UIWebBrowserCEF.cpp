@@ -148,7 +148,6 @@ public:
 
 	LPCTSTR GetWindowClassName() const;
 	void OnFinalMessage(HWND hWnd);
-	LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 protected:
 	CWebBrowserCefUI* m_pOwner;
@@ -165,8 +164,7 @@ void CCefWebBrowserWnd::Init(CWebBrowserCefUI* pOwner)
 	m_pOwner = pOwner;
 	RECT rcPos = m_pOwner->GetPos();
 	this->Create(m_pOwner->GetManager()->GetPaintWindow(),
-		TEXT("CefWebBrowserWnd"), WS_CHILD, 0, rcPos);
-	SetClassLongPtr(m_hWnd, GCL_HBRBACKGROUND, (LONG)::GetStockObject(WHITE_BRUSH));
+		TEXT("CefWebBrowserWnd"), UI_WNDSTYLE_CHILD, WS_EX_TOOLWINDOW, rcPos);
 	m_bInit = true;
 }
 
@@ -182,11 +180,6 @@ void CCefWebBrowserWnd::OnFinalMessage(HWND /*hWnd*/)
 	m_pOwner->Invalidate();
 	m_pOwner->m_impl->m_pWindow = NULL;
 	delete this;
-}
-
-LRESULT CCefWebBrowserWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	return CWindowWnd::HandleMessage(uMsg, wParam, lParam);
 }
 
 
@@ -317,13 +310,6 @@ void CWebBrowserCefUI::DoInit()
 		}
 	}
 }
-
-
-void CWebBrowserCefUI::DoEvent(TEventUI& event)
-{
-	CControlUI::DoEvent(event);
-}
-
 
 void CWebBrowserCefUI::Navigate( LPCTSTR lpszUrl )
 {
