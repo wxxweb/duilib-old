@@ -218,6 +218,7 @@ CWindowWnd::CWindowWnd()
 	, m_OldWndProc(::DefWindowProc)
 	, m_bSubclassed(false)
 	, m_bContinueModal(false)
+	, m_nModalResult(IDCANCEL)
 {
 }
 
@@ -319,9 +320,9 @@ UINT CWindowWnd::ShowModal()
 
 UINT CWindowWnd::RunModalLoop(void)
 {
-	UINT nRet = IDCANCEL;
 	MSG msg = {0};
 	m_bContinueModal = true;
+	m_nModalResult = IDCANCEL;
 
 	if (::GetWindowLongPtr(m_hWnd, GWL_STYLE) & WS_VISIBLE) {
 		::ShowWindow(m_hWnd, SW_SHOWNORMAL);
@@ -334,14 +335,14 @@ UINT CWindowWnd::RunModalLoop(void)
 		// PeekMessage 可避免在线程中创建子窗口使父窗口死锁
 		while (FALSE == ::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 			if (WM_QUIT == msg.message && msg.hwnd == m_hWnd) {
-				return nRet;
+				return m_nModalResult;
 			}
 			::Sleep(10);
 			continue;
 		}
 
 		if (WM_CLOSE == msg.message && msg.hwnd == m_hWnd) {
-			nRet = msg.wParam;
+			m_nModalResult = msg.wParam;
 			::DestroyWindow(m_hWnd);
 		}
 
@@ -351,11 +352,11 @@ UINT CWindowWnd::RunModalLoop(void)
 		}
 
 		if (!this->IsContinueModal()) {
-			return nRet;
+			return m_nModalResult;
 		}
 	}
 
-	return nRet;
+	return m_nModalResult;
 }
 
 bool CWindowWnd::IsContinueModal() const
@@ -481,6 +482,8 @@ LRESULT CALLBACK CWindowWnd::__WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
         ::SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LPARAM>(pThis));
     }
 	else if ( uMsg == WM_DESTROY ) {
+		pThis = reinterpret_cast<CWindowWnd*>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
+		pThis->m_bContinueModal = false;
 		::PostQuitMessage(0);
 	}
     else {
@@ -510,7 +513,7 @@ LRESULT CALLBACK CWindowWnd::__ControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
         pThis = static_cast<CWindowWnd*>(lpcs->lpCreateParams);
         ::SetProp(hWnd, _T("WndX"), (HANDLE) pThis);
         pThis->m_hWnd = hWnd;
-    } 
+    }
     else {
         pThis = reinterpret_cast<CWindowWnd*>(::GetProp(hWnd, _T("WndX")));
         if( uMsg == WM_NCDESTROY && pThis != NULL ) {

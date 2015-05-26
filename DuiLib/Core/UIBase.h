@@ -104,6 +104,7 @@ protected:
     WNDPROC m_OldWndProc;
     bool m_bSubclassed;
 	bool m_bContinueModal;
+	int m_nModalResult;
 };
 
 } // namespace DuiLib
