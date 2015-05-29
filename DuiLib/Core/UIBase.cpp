@@ -350,10 +350,6 @@ UINT CWindowWnd::RunModalLoop(void)
 			::TranslateMessage(&msg);
 			::DispatchMessage(&msg);
 		}
-
-		if (!this->IsContinueModal()) {
-			return m_nModalResult;
-		}
 	}
 
 	return m_nModalResult;
@@ -362,18 +358,6 @@ UINT CWindowWnd::RunModalLoop(void)
 bool CWindowWnd::IsContinueModal() const
 {
 	return m_bContinueModal;
-}
-
-void CWindowWnd::EndModalLoop(UINT nResult)
-{
-	ASSERT(::IsWindow(m_hWnd));
-
-	// make sure a message goes through to exit the modal loop
-	if (true == m_bContinueModal)
-	{
-		m_bContinueModal = false;
-		this->PostMessage(WM_NULL);
-	}
 }
 
 void CWindowWnd::Close(UINT nRet)
@@ -482,8 +466,6 @@ LRESULT CALLBACK CWindowWnd::__WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
         ::SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LPARAM>(pThis));
     }
 	else if ( uMsg == WM_DESTROY ) {
-		pThis = reinterpret_cast<CWindowWnd*>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
-		pThis->m_bContinueModal = false;
 		::PostQuitMessage(0);
 	}
     else {
