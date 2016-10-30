@@ -90,7 +90,7 @@ public:
         if( pt.x >= rcClient.left + rcCaption.left && pt.x < rcClient.right - rcCaption.right \
             && pt.y >= rcCaption.top && pt.y < rcCaption.bottom ) {
                 CControlUI* pControl = static_cast<CControlUI*>(m_pm.FindControl(pt));
-                if( pControl && _tcscmp(pControl->GetClass(), _T("ButtonUI")) != 0 )
+                if( pControl && _tcscmp(pControl->GetClass(), DUI_CTR_BUTTON) != 0 )
                     return HTCAPTION;
         }
 
@@ -178,7 +178,7 @@ public:
             IWebBrowser2* pWebBrowser = NULL;
             pActiveXUI->GetControl(IID_IWebBrowser2, (void**)&pWebBrowser);
             if( pWebBrowser != NULL ) {
-                pWebBrowser->Navigate(L"https://code.google.com/p/duilib/",NULL,NULL,NULL,NULL);  
+                pWebBrowser->Navigate(L"https://github.com/duilib/duilib",NULL,NULL,NULL,NULL);  
                 //pWebBrowser->Navigate(L"about:blank",NULL,NULL,NULL,NULL); 
                 pWebBrowser->Release();
             }
@@ -230,6 +230,7 @@ public:
         CLoginFrameWnd* pLoginFrame = new CLoginFrameWnd();
         if( pLoginFrame == NULL ) { Close(); return; }
         pLoginFrame->Create(m_hWnd, _T(""), UI_WNDSTYLE_DIALOG, 0, 0, 0, 0, 0, NULL);
+		pLoginFrame->SetIcon(IDI_ICON_DUILIB);
         pLoginFrame->CenterWindow();
         pLoginFrame->ShowModal();
     }
@@ -304,8 +305,8 @@ public:
 
                 COptionUI* pControl = static_cast<COptionUI*>(m_pm.FindControl(_T("hallswitch")));
                 pControl->Activate();
-                CHorizontalLayoutUI* pH = static_cast<CHorizontalLayoutUI*>(m_pm.FindControl(_T("roomswitchpanel")));
-                if( pH ) pH->SetVisible(false);
+                pControl = static_cast<COptionUI*>(m_pm.FindControl(_T("roomswitch")));
+                if( pControl ) pControl->SetVisible(false);
             }
             else if( name == _T("fontswitch") ) {
                 TFontInfo* pFontInfo = m_pm.GetDefaultFontInfo();
@@ -325,8 +326,8 @@ public:
                 COptionUI* pControl = static_cast<COptionUI*>(m_pm.FindControl(_T("hallswitch")));
                 if( pControl ) {
                     pControl->Activate();
-                    CHorizontalLayoutUI* pH = static_cast<CHorizontalLayoutUI*>(m_pm.FindControl(_T("roomswitchpanel")));
-                    if( pH ) pH->SetVisible(false);
+                    pControl = static_cast<COptionUI*>(m_pm.FindControl(_T("roomswitch")));
+                    if( pControl ) pControl->SetVisible(false);
                 }
             }
             else if( name == _T("sendbtn") ) {
@@ -366,7 +367,7 @@ public:
             GameListUI* pGameList = static_cast<GameListUI*>(m_pm.FindControl(_T("gamelist")));
             if( pGameList->GetItemIndex(msg.pSender) != -1 )
             {
-                if( _tcscmp(msg.pSender->GetClass(), _T("ListLabelElementUI")) == 0 ) {
+                if( _tcscmp(msg.pSender->GetClass(), DUI_CTR_LISTLABELELEMENT) == 0 ) {
                     GameListUI::Node* node = (GameListUI::Node*)msg.pSender->GetTag();
 
                     POINT pt = { 0 };
@@ -383,16 +384,16 @@ public:
             GameListUI* pGameList = static_cast<GameListUI*>(m_pm.FindControl(_T("gamelist")));
             if( pGameList->GetItemIndex(msg.pSender) != -1 )
             {
-                if( _tcscmp(msg.pSender->GetClass(), _T("ListLabelElementUI")) == 0 ) {
+                if( _tcscmp(msg.pSender->GetClass(), DUI_CTR_LISTLABELELEMENT) == 0 ) {
                     GameListUI::Node* node = (GameListUI::Node*)msg.pSender->GetTag();
                     pGameList->ExpandNode(node, !node->data()._expand);
                     if( node->data()._level == 3 ) {
                         COptionUI* pControl = static_cast<COptionUI*>(m_pm.FindControl(_T("roomswitch")));
                         if( pControl ) {
-                            CHorizontalLayoutUI* pH = static_cast<CHorizontalLayoutUI*>(m_pm.FindControl(_T("roomswitchpanel")));
-                            if( pH ) pH->SetVisible(true);
+                            pControl->SetVisible(true);
                             pControl->SetText(node->parent()->parent()->data()._text);
                             pControl->Activate();
+
                         }
                     }
                 }
@@ -503,9 +504,9 @@ public:
         if( pt.x >= rcClient.left + rcCaption.left && pt.x < rcClient.right - rcCaption.right \
             && pt.y >= rcCaption.top && pt.y < rcCaption.bottom ) {
                 CControlUI* pControl = static_cast<CControlUI*>(m_pm.FindControl(pt));
-                if( pControl && _tcscmp(pControl->GetClass(), _T("ButtonUI")) != 0 && 
-                    _tcscmp(pControl->GetClass(), _T("OptionUI")) != 0 &&
-                    _tcscmp(pControl->GetClass(), _T("TextUI")) != 0 )
+                if( pControl && _tcscmp(pControl->GetClass(), DUI_CTR_BUTTON) != 0 && 
+                    _tcscmp(pControl->GetClass(), DUI_CTR_OPTION) != 0 &&
+                    _tcscmp(pControl->GetClass(), DUI_CTR_TEXT) != 0 )
                     return HTCAPTION;
         }
 
@@ -531,15 +532,20 @@ public:
 
     LRESULT OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
     {
+        int primaryMonitorWidth = ::GetSystemMetrics(SM_CXSCREEN);
+        int primaryMonitorHeight = ::GetSystemMetrics(SM_CYSCREEN);
         MONITORINFO oMonitor = {};
         oMonitor.cbSize = sizeof(oMonitor);
         ::GetMonitorInfo(::MonitorFromWindow(*this, MONITOR_DEFAULTTOPRIMARY), &oMonitor);
         CDuiRect rcWork = oMonitor.rcWork;
+        rcWork.Offset(-oMonitor.rcMonitor.left, -oMonitor.rcMonitor.top);
+        if (rcWork.right > primaryMonitorWidth) rcWork.right = primaryMonitorWidth;
+        if (rcWork.bottom > primaryMonitorHeight) rcWork.right = primaryMonitorHeight;
         LPMINMAXINFO lpMMI = (LPMINMAXINFO) lParam;
         lpMMI->ptMaxPosition.x = rcWork.left;
         lpMMI->ptMaxPosition.y = rcWork.top;
-        lpMMI->ptMaxSize.x = rcWork.right - rcWork.left;
-        lpMMI->ptMaxSize.y = rcWork.bottom - rcWork.top;
+        lpMMI->ptMaxSize.x = rcWork.right;
+        lpMMI->ptMaxSize.y = rcWork.bottom;
         bHandled = FALSE;
         return 0;
     }
@@ -609,15 +615,20 @@ private:
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int nCmdShow)
 {
     CPaintManagerUI::SetInstance(hInstance);
+#if 0
     CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + _T("skin"));
     CPaintManagerUI::SetResourceZip(_T("GameRes.zip"));
+#else
+	CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + _T("skin/GameRes"));
+#endif
 
     HRESULT Hr = ::CoInitialize(NULL);
     if( FAILED(Hr) ) return 0;
 
     CGameFrameWnd* pFrame = new CGameFrameWnd();
     if( pFrame == NULL ) return 0;
-    pFrame->Create(NULL, _T(""), UI_WNDSTYLE_FRAME, 0L, 0, 0, 1024, 738);
+	pFrame->SetIcon(IDI_ICON_DUILIB);
+    pFrame->Create(NULL, _T("ÓÎÏ·ÖÐÐÄ"), UI_WNDSTYLE_FRAME, 0L, 0, 0, 1024, 738);
     pFrame->CenterWindow();
     ::ShowWindow(*pFrame, SW_SHOWMAXIMIZED);
 

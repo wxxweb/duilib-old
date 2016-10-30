@@ -1,5 +1,4 @@
 #include "StdAfx.h"
-#include <MsHtmHst.h>
 
 namespace DuiLib {
 
@@ -17,6 +16,7 @@ class CActiveXCtrl;
 class CActiveXWnd : public CWindowWnd
 {
 public:
+	CActiveXWnd() : m_iLayeredTick(0), m_bDrawCaret(false) {}
     HWND Init(CActiveXCtrl* pOwner, HWND hWndParent);
 
     LPCTSTR GetWindowClassName() const;
@@ -27,14 +27,23 @@ public:
 protected:
     void DoVerb(LONG iVerb);
 
+	LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnMouseActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnSetFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnKillFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnEraseBkgnd(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnPrint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
 protected:
+	enum { 
+		DEFAULT_TIMERID = 20,
+	};
+
     CActiveXCtrl* m_pOwner;
+	int m_iLayeredTick;
+	bool m_bDrawCaret;
 };
 
 
@@ -208,8 +217,7 @@ class CActiveXCtrl :
     public IOleInPlaceSiteWindowless,
     public IOleControlSite,
     public IObjectWithSite,
-    public IOleContainer,
-	public IDocHostUIHandler
+    public IOleContainer
 {
     friend class CActiveXUI;
     friend class CActiveXWnd;
@@ -285,24 +293,6 @@ public:
     // IParseDisplayName
     STDMETHOD(ParseDisplayName)(IBindCtx* pbc, LPOLESTR pszDisplayName, ULONG* pchEaten, IMoniker** ppmkOut);
 
-
-	//IDocHostUIHandler
-	STDMETHOD(ShowContextMenu)(DWORD dwID, POINT FAR* ppt, IUnknown FAR* pcmdtReserved,IDispatch FAR* pdispReserved);
-	STDMETHOD(GetHostInfo)(DOCHOSTUIINFO FAR* pInfo);
-	STDMETHOD(ShowUI)(DWORD dwID, IOleInPlaceActiveObject FAR* pActiveObject,IOleCommandTarget FAR* pCommandTarget,IOleInPlaceFrame  FAR* pFrame,IOleInPlaceUIWindow FAR* pDoc);
-	STDMETHOD(HideUI)(void);    
-	STDMETHOD(UpdateUI)(void);
-	STDMETHOD(EnableModeless)(BOOL fEnable);
-	STDMETHOD(OnDocWindowActivate)(BOOL fActivate);
-	STDMETHOD(OnFrameWindowActivate)(BOOL fActivate);
-	STDMETHOD(ResizeBorder)(LPCRECT prcBorder, IOleInPlaceUIWindow FAR* pUIWindow,BOOL fRameWindow);
-	STDMETHOD(TranslateAccelerator)(LPMSG lpMsg, const GUID FAR* pguidCmdGroup,DWORD nCmdID);   
-	STDMETHOD(GetOptionKeyPath)(LPOLESTR FAR* pchKey, DWORD dw);
-	STDMETHOD(GetDropTarget)(IDropTarget* pDropTarget,IDropTarget** ppDropTarget);
-	STDMETHOD(GetExternal)(IDispatch** ppDispatch);
-	STDMETHOD(TranslateUrl)(DWORD dwTranslate, OLECHAR* pchURLIn,OLECHAR** ppchURLOut);
-	STDMETHOD(FilterDataObject)(IDataObject* pDO, IDataObject** ppDORet);
-
 protected:
     HRESULT CreateActiveXWnd();
 
@@ -360,7 +350,6 @@ STDMETHODIMP CActiveXCtrl::QueryInterface(REFIID riid, LPVOID *ppvObject)
     else if( riid == IID_IOleControlSite )           *ppvObject = static_cast<IOleControlSite*>(this);
     else if( riid == IID_IOleContainer )             *ppvObject = static_cast<IOleContainer*>(this);
     else if( riid == IID_IObjectWithSite )           *ppvObject = static_cast<IObjectWithSite*>(this);
-	else if( riid == IID_IDocHostUIHandler)           *ppvObject = static_cast<IDocHostUIHandler*>(this);
     if( *ppvObject != NULL ) AddRef();
     return *ppvObject == NULL ? E_NOINTERFACE : S_OK;
 }
@@ -490,6 +479,7 @@ STDMETHODIMP CActiveXCtrl::GetDC(LPCRECT pRect, DWORD grfFlags, HDC* phDC)
     DUITRACE(_T("AX: CActiveXCtrl::GetDC"));
     if( phDC == NULL ) return E_POINTER;
     if( m_pOwner == NULL ) return E_UNEXPECTED;
+	if( m_bWindowless ) return S_FALSE;
     *phDC = ::GetDC(m_pOwner->m_hwndHost);
     if( (grfFlags & OLEDC_PAINTBKGND) != 0 ) {
         CDuiRect rcItem = m_pOwner->GetPos();
@@ -759,77 +749,6 @@ STDMETHODIMP CActiveXCtrl::ParseDisplayName(IBindCtx *pbc, LPOLESTR pszDisplayNa
     return E_NOTIMPL;
 }
 
-STDMETHODIMP CActiveXCtrl::ShowContextMenu(DWORD dwID, POINT FAR* ppt, IUnknown FAR* pcmdtReserved,IDispatch FAR* pdispReserved)
-{        
-	return E_NOTIMPL;
-} 
-
-STDMETHODIMP CActiveXCtrl::GetHostInfo(DOCHOSTUIINFO FAR* pInfo)
-{        
-	if(pInfo != NULL)
-	{            
-		pInfo->cbSize = sizeof(DOCHOSTUIINFO);
-		//pInfo->dwFlags			= DOCHOSTUIFLAG_NO3DBORDER;							// duiLib默认设置，暂不使用
-		pInfo->dwDoubleClick	= DOCHOSTUIDBLCLK_DEFAULT;
-		pInfo->dwFlags		    = DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG_NO3DBORDER;	// 默认情况下，去掉边框及滚动条
-	}         
-	return S_OK;    
-}         
-
-STDMETHODIMP CActiveXCtrl::ShowUI(DWORD dwID, IOleInPlaceActiveObject FAR* pActiveObject,                    IOleCommandTarget FAR* pCommandTarget,                    IOleInPlaceFrame  FAR* pFrame,                    IOleInPlaceUIWindow FAR* pDoc)    
-{        
-	return E_NOTIMPL;    
-}         
-
-STDMETHODIMP CActiveXCtrl::HideUI(void)    
-{       
-	return E_NOTIMPL;
-}      
-STDMETHODIMP CActiveXCtrl::UpdateUI(void)  
-{       
-	return E_NOTIMPL;  
-}        
-STDMETHODIMP CActiveXCtrl::EnableModeless(BOOL fEnable) 
-{        
-	return E_NOTIMPL; 
-}    
-STDMETHODIMP CActiveXCtrl::OnDocWindowActivate(BOOL fActivate)  
-{      
-	return E_NOTIMPL; 
-}    
-STDMETHODIMP CActiveXCtrl::OnFrameWindowActivate(BOOL fActivate) 
-{       
-	return E_NOTIMPL; 
-}    
-STDMETHODIMP CActiveXCtrl::ResizeBorder(LPCRECT prcBorder, IOleInPlaceUIWindow FAR* pUIWindow,BOOL fRameWindow)   
-{       
-	return E_NOTIMPL; 
-}    
-STDMETHODIMP CActiveXCtrl::TranslateAccelerator(LPMSG lpMsg, const GUID FAR* pguidCmdGroup,DWORD nCmdID)    
-{       
-	return E_NOTIMPL;  
-}     
-STDMETHODIMP CActiveXCtrl::GetOptionKeyPath(LPOLESTR FAR* pchKey, DWORD dw)  
-{       
-	return E_NOTIMPL; 
-}   
-STDMETHODIMP CActiveXCtrl::GetDropTarget(IDropTarget* pDropTarget,IDropTarget** ppDropTarget)   
-{       
-	return E_NOTIMPL;  
-}    
-STDMETHODIMP CActiveXCtrl::GetExternal(IDispatch** ppDispatch) 
-{      
-	return E_NOTIMPL;
-}    
-STDMETHODIMP CActiveXCtrl::TranslateUrl(DWORD dwTranslate, OLECHAR* pchURLIn,OLECHAR** ppchURLOut) 
-{      
-	return E_NOTIMPL;  
-} 
-STDMETHODIMP CActiveXCtrl::FilterDataObject(IDataObject* pDO, IDataObject** ppDORet)  
-{   
-	return E_NOTIMPL;   
-} 
-
 HRESULT CActiveXCtrl::CreateActiveXWnd()
 {
     if( m_pWindow != NULL ) return S_OK;
@@ -859,6 +778,7 @@ LPCTSTR CActiveXWnd::GetWindowClassName() const
 
 void CActiveXWnd::OnFinalMessage(HWND hWnd)
 {
+	m_pOwner->m_pOwner->GetManager()->RemoveNativeWindow(hWnd);
     //delete this; // 这里不需要清理，CActiveXUI会清理的
 }
 
@@ -881,7 +801,10 @@ LRESULT CActiveXWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
     LRESULT lRes=0;
     BOOL bHandled = TRUE;
     switch( uMsg ) {
+	case WM_CREATE:        lRes = OnCreate(uMsg, wParam, lParam, bHandled); break;
+	case WM_TIMER:         lRes = OnTimer(uMsg, wParam, lParam, bHandled); break;
     case WM_PAINT:         lRes = OnPaint(uMsg, wParam, lParam, bHandled); break;
+	case WM_PRINT:		   lRes = OnPrint(uMsg, wParam, lParam, bHandled); break;
     case WM_SETFOCUS:      lRes = OnSetFocus(uMsg, wParam, lParam, bHandled); break;
     case WM_KILLFOCUS:     lRes = OnKillFocus(uMsg, wParam, lParam, bHandled); break;
     case WM_ERASEBKGND:    lRes = OnEraseBkgnd(uMsg, wParam, lParam, bHandled); break;
@@ -892,6 +815,32 @@ LRESULT CActiveXWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
     if( !bHandled ) return CWindowWnd::HandleMessage(uMsg, wParam, lParam);
     return lRes;
+}
+
+LRESULT CActiveXWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	m_pOwner->m_pOwner->GetManager()->AddNativeWindow(m_pOwner->m_pOwner, m_hWnd);
+	if( m_pOwner->m_pOwner->GetManager()->IsLayered() ) {
+		::SetTimer(m_hWnd, DEFAULT_TIMERID, 50, NULL);
+	}
+	return 0;
+}
+
+LRESULT CActiveXWnd::OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	if (wParam == DEFAULT_TIMERID) {
+		if (m_pOwner->m_pOwner->GetManager()->IsLayered()) {
+			m_pOwner->m_pOwner->GetManager()->AddNativeWindow(m_pOwner->m_pOwner, m_hWnd);
+			m_iLayeredTick += 1;
+			if (m_iLayeredTick >= 10) {
+				m_iLayeredTick = 0;
+				m_bDrawCaret = !m_bDrawCaret;
+			}
+		}
+		return 0;
+	}
+	bHandled = FALSE;
+	return 0;
 }
 
 LRESULT CActiveXWnd::OnEraseBkgnd(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -937,6 +886,34 @@ LRESULT CActiveXWnd::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHan
     return 1;
 }
 
+LRESULT CActiveXWnd::OnPrint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	RECT rcClient;
+	::GetClientRect(m_hWnd, &rcClient);
+	m_pOwner->m_pViewObject->Draw(DVASPECT_CONTENT, -1, NULL, NULL, NULL, (HDC)wParam, (RECTL*) &rcClient, NULL, NULL, NULL); 
+	
+	if (m_bDrawCaret ) {
+		RECT rcPos = m_pOwner->m_pOwner->GetPos();
+		GUITHREADINFO guiThreadInfo;
+		guiThreadInfo.cbSize = sizeof(GUITHREADINFO);
+		::GetGUIThreadInfo(NULL, &guiThreadInfo);
+		if (guiThreadInfo.hwndCaret) {
+			POINT ptCaret;
+			ptCaret.x = guiThreadInfo.rcCaret.left;
+			ptCaret.y = guiThreadInfo.rcCaret.top;
+			::ClientToScreen(guiThreadInfo.hwndCaret, &ptCaret);
+			::ScreenToClient(m_pOwner->m_pOwner->GetManager()->GetPaintWindow(), &ptCaret);
+			if( ::PtInRect(&rcPos, ptCaret) ) {
+				RECT rcCaret;
+				rcCaret = guiThreadInfo.rcCaret;
+				rcCaret.right = rcCaret.left;
+				CRenderEngine::DrawLine((HDC)wParam, rcCaret, 1, 0xFF000000);
+			}
+		}
+	}
+
+	return 1;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////
 //
@@ -945,16 +922,18 @@ LRESULT CActiveXWnd::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHan
 CActiveXUI::CActiveXUI() : m_pUnk(NULL), m_pControl(NULL), m_hwndHost(NULL), m_bCreated(false), m_bDelayCreate(true)
 {
     m_clsid = IID_NULL;
+	::CoInitialize(NULL);
 }
 
 CActiveXUI::~CActiveXUI()
 {
     ReleaseControl();
+	::CoUninitialize();
 }
 
 LPCTSTR CActiveXUI::GetClass() const
 {
-    return _T("ActiveXUI");
+    return DUI_CTR_ACTIVEX;
 }
 
 LPVOID CActiveXUI::GetInterface(LPCTSTR pstrName)
@@ -963,7 +942,12 @@ LPVOID CActiveXUI::GetInterface(LPCTSTR pstrName)
 	return CControlUI::GetInterface(pstrName);
 }
 
-HWND CActiveXUI::GetHostWindow() const
+UINT CActiveXUI::GetControlFlags() const
+{
+	return UIFLAG_TABSTOP;
+}
+
+HWND CActiveXUI::GetNativeWindow() const
 {
     return m_hwndHost;
 }
@@ -997,9 +981,9 @@ void CActiveXUI::SetInternVisible(bool bVisible)
         ::ShowWindow(m_hwndHost, IsVisible() ? SW_SHOW : SW_HIDE);
 }
 
-void CActiveXUI::SetPos(RECT rc)
+void CActiveXUI::SetPos(RECT rc, bool bNeedInvalidate)
 {
-    CControlUI::SetPos(rc);
+    CControlUI::SetPos(rc, bNeedInvalidate);
 
     if( !m_bCreated ) DoCreateControl();
 
@@ -1026,14 +1010,22 @@ void CActiveXUI::SetPos(RECT rc)
     }
 }
 
-void CActiveXUI::DoPaint(HDC hDC, const RECT& rcPaint)
+void CActiveXUI::Move(SIZE szOffset, bool bNeedInvalidate)
 {
-    if( !::IntersectRect(&m_rcPaint, &rcPaint, &m_rcItem) ) return;
+	CControlUI::Move(szOffset, bNeedInvalidate);
+	if( !m_pControl->m_bWindowless ) {
+		ASSERT(m_pControl->m_pWindow);
+		::MoveWindow(*m_pControl->m_pWindow, m_rcItem.left, m_rcItem.top, m_rcItem.right - m_rcItem.left, m_rcItem.bottom - m_rcItem.top, TRUE);
+	}
+}
 
+bool CActiveXUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+{
     if( m_pControl != NULL && m_pControl->m_bWindowless && m_pControl->m_pViewObject != NULL )
     {
         m_pControl->m_pViewObject->Draw(DVASPECT_CONTENT, -1, NULL, NULL, NULL, hDC, (RECTL*) &m_rcItem, (RECTL*) &m_rcItem, NULL, NULL); 
     }
+    return true;
 }
 
 void CActiveXUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
@@ -1066,6 +1058,10 @@ LRESULT CActiveXUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, bool
         }
         if( dwHitResult != HITRESULT_HIT ) return 0;
         if( uMsg == WM_SETCURSOR ) bWasHandled = false;
+        else if( uMsg == WM_LBUTTONDOWN || uMsg == WM_LBUTTONDBLCLK || uMsg == WM_RBUTTONDOWN ) {
+            if (!GetManager()->IsNoActivate()) ::SetFocus(GetManager()->GetPaintWindow());
+            SetFocus();
+        }
     }
     else if( uMsg >= WM_KEYFIRST && uMsg <= WM_KEYLAST ) {
         // Keyboard messages just go when we have focus
@@ -1110,7 +1106,7 @@ bool CActiveXUI::CreateControl(LPCTSTR pstrCLSID)
 #else
     _tcsncpy(szCLSID, pstrCLSID, lengthof(szCLSID) - 1);
 #endif
-    if( pstrCLSID[0] == '{' ) ::CLSIDFromString(szCLSID, &clsid);
+    if( pstrCLSID[0] == _T('{') ) ::CLSIDFromString(szCLSID, &clsid);
     else ::CLSIDFromProgID(szCLSID, &clsid);
     return CreateControl(clsid);
 }

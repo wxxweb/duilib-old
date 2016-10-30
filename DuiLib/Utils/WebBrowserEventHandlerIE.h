@@ -24,6 +24,7 @@ namespace DuiLib
 		virtual void BeforeNavigate2( IDispatch *pDisp,VARIANT *&url,VARIANT *&Flags,VARIANT *&TargetFrameName,VARIANT *&PostData,VARIANT *&Headers,VARIANT_BOOL *&Cancel ) {}
 		virtual void NavigateError(IDispatch *pDisp,VARIANT * &url,VARIANT *&TargetFrameName,VARIANT *&StatusCode,VARIANT_BOOL *&Cancel) {}
 		virtual void NavigateComplete2(IDispatch *pDisp,VARIANT *&url){}
+		virtual void DocumentComplete(IDispatch *pDisp,VARIANT *&url) {}
 		virtual void ProgressChange(LONG nProgress, LONG nProgressMax){}
 		virtual void NewWindow3(IDispatch **pDisp, VARIANT_BOOL *&Cancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl){}
 		virtual void CommandStateChange(long Command,VARIANT_BOOL Enable){};
@@ -44,14 +45,10 @@ namespace DuiLib
 		virtual HRESULT STDMETHODCALLTYPE GetHostInfo(
 			/* [out][in] */ DOCHOSTUIINFO __RPC_FAR *pInfo)
 		{
-			if (pInfo != NULL)
-			{
-			 	//pInfo->dwFlags |= DOCHOSTUIFLAG_NO3DBORDER;
-				//pInfo->dwFlags |= DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG_NO3DBORDER;
-				
-
-			}
-
+			// 		if (pInfo != NULL)
+			// 		{
+			// 			pInfo->dwFlags |= DOCHOSTUIFLAG_NO3DBORDER;
+			// 		}
 			return S_OK;
 		}
 

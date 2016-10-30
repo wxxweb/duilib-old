@@ -98,6 +98,12 @@
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'" />
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
+    <TargetName>$(ProjectName)_d</TargetName>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -133,7 +139,8 @@
       <ImportLibrary>$(SolutionDir)lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
-      <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
+      <MapFileName>
+      </MapFileName>
       <AdditionalDependencies>user32.lib;gdi32.lib;ole32.lib;oleaut32.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
@@ -181,6 +188,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
       <AdditionalDependencies>user32.lib;gdi32.lib;ole32.lib;oleaut32.lib</AdditionalDependencies>
+      <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -227,6 +235,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
       <AdditionalDependencies>user32.lib;gdi32.lib;ole32.lib;oleaut32.lib</AdditionalDependencies>
+      <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -268,7 +277,8 @@
       <ImportLibrary>$(SolutionDir)lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
-      <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
+      <MapFileName>
+      </MapFileName>
       <AdditionalDependencies>user32.lib;gdi32.lib;ole32.lib;oleaut32.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
@@ -277,6 +287,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Control\UIGifAnim.cpp" />
     <ClCompile Include="Control\UIImport.cpp" />
     <ClCompile Include="Control\UIWebBrowserCEF.cpp" />
     <ClCompile Include="Control\UIWebBrowserIE.cpp" />
@@ -304,6 +315,7 @@
     </ClCompile>
     <ClCompile Include="Utils\UIDelegate.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
+    <ClCompile Include="Utils\WndShadow.cpp" />
     <ClCompile Include="Utils\XUnzip.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
@@ -345,6 +357,7 @@
     <ClCompile Include="Control\UIWebBrowser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Control\UIGifAnim.h" />
     <ClInclude Include="Control\UIImport.h" />
     <ClInclude Include="Control\UIWebBrowserCEF.h" />
     <ClInclude Include="Control\UIWebBrowserIE.h" />
@@ -355,6 +368,7 @@
     <ClInclude Include="Utils\cef_web_browser_i.h" />
     <ClInclude Include="Utils\downloadmgr.h" />
     <ClInclude Include="Utils\FlashEventHandler.h" />
+    <ClInclude Include="Utils\stb_image.h" />
     <ClInclude Include="Utils\UIDelegate.h" />
     <ClInclude Include="Utils\Utils.h" />
     <ClInclude Include="Utils\WebBrowserEventHandler.h" />
@@ -391,6 +405,7 @@
     <ClInclude Include="Control\UIText.h" />
     <ClInclude Include="Control\UITreeView.h" />
     <ClInclude Include="Control\UIWebBrowser.h" />
+    <ClInclude Include="Utils\WndShadow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

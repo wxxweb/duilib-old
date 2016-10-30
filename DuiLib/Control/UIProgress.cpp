@@ -3,7 +3,7 @@
 
 namespace DuiLib
 {
-	CProgressUI::CProgressUI() : m_bHorizontal(true), m_nMin(0), m_nMax(100), m_nValue(0), m_bStretchForeImage(true)
+	CProgressUI::CProgressUI() : m_bHorizontal(true), m_nMin(0), m_nMax(100), m_nValue(0)
 	{
 		m_uTextStyle = DT_SINGLELINE | DT_CENTER;
 		SetFixedHeight(12);
@@ -11,7 +11,7 @@ namespace DuiLib
 
 	LPCTSTR CProgressUI::GetClass() const
 	{
-		return _T("ProgressUI");
+		return DUI_CTR_PROGRESS;
 	}
 
 	LPVOID CProgressUI::GetInterface(LPCTSTR pstrName)
@@ -63,19 +63,21 @@ namespace DuiLib
 	void CProgressUI::SetValue(int nValue)
 	{
 		m_nValue = nValue;
+		if (m_nValue > m_nMax) m_nValue = m_nMax;
+		if (m_nValue < m_nMin) m_nValue = m_nMin;
 		Invalidate();
 	}
 
 	LPCTSTR CProgressUI::GetForeImage() const
 	{
-		return m_sForeImage;
+		return m_diFore.sDrawString;
 	}
 
 	void CProgressUI::SetForeImage(LPCTSTR pStrImage)
 	{
-		if( m_sForeImage == pStrImage ) return;
-
-		m_sForeImage = pStrImage;
+		if( m_diFore.sDrawString == pStrImage && m_diFore.pImageInfo != NULL ) return;
+		m_diFore.Clear();
+		m_diFore.sDrawString = pStrImage;
 		Invalidate();
 	}
 
@@ -86,7 +88,6 @@ namespace DuiLib
 		else if( _tcscmp(pstrName, _T("min")) == 0 ) SetMinValue(_ttoi(pstrValue));
 		else if( _tcscmp(pstrName, _T("max")) == 0 ) SetMaxValue(_ttoi(pstrValue));
 		else if( _tcscmp(pstrName, _T("value")) == 0 ) SetValue(_ttoi(pstrValue));
-		else if( _tcscmp(pstrName, _T("isstretchfore"))==0) SetStretchForeImage(_tcscmp(pstrValue, _T("true")) == 0? true : false);
 		else CLabelUI::SetAttribute(pstrName, pstrValue);
 	}
 
@@ -106,30 +107,7 @@ namespace DuiLib
 			rc.right = m_rcItem.right - m_rcItem.left;
 			rc.bottom = m_rcItem.bottom - m_rcItem.top;
 		}
-
-		if( !m_sForeImage.IsEmpty() ) {
-			m_sForeImageModify.Empty();
-			if (m_bStretchForeImage)
-				m_sForeImageModify.SmallFormat(_T("dest='%d,%d,%d,%d'"), rc.left, rc.top, rc.right, rc.bottom);
-			else
-				m_sForeImageModify.SmallFormat(_T("dest='%d,%d,%d,%d' source='%d,%d,%d,%d'")
-				, rc.left, rc.top, rc.right, rc.bottom
-				, rc.left, rc.top, rc.right, rc.bottom);
-
-			if( !DrawImage(hDC, (LPCTSTR)m_sForeImage, (LPCTSTR)m_sForeImageModify) ) m_sForeImage.Empty();
-			else return;
-		}
-	}
-
-	bool CProgressUI::IsStretchForeImage()
-	{
-		return m_bStretchForeImage;
-	}
-
-	void CProgressUI::SetStretchForeImage( bool bStretchForeImage /*= true*/ )
-	{
-		if (m_bStretchForeImage==bStretchForeImage)		return;
-		m_bStretchForeImage=bStretchForeImage;
-		Invalidate();
+		m_diFore.rcDestOffset = rc;
+		if( DrawImage(hDC, m_diFore) ) return;
 	}
 }

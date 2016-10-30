@@ -15,6 +15,7 @@
 		<Attribute name="linkfontcolor" default="0xFF0000FF" type="DWORD" comment="默认的link字体颜色,如(0xFF0000FF)"/>
 		<Attribute name="linkhoverfontcolor" default="0xFFD3215F" type="DWORD" comment="默认的linkhoverfont字体颜色,如(0xFFD3215F)"/>
 		<Attribute name="selectedcolor" default="0xFFBAE4FF" type="DWORD" comment="默认的selected字体颜色,如(0xFFBAE4FF)"/>
+		<Attribute name="showdirty" default="false" type="BOOL" comment="绘制脏矩形(屏幕上更新的区域被称为脏矩形)"/>
 	</Window>
 	<ChildLayout parent="Container" >
 		<Attribute name="xmlfile" default="" type="STRING" comment="子窗体XML布局文件"/>
@@ -1095,4 +1096,9 @@
 		<Attribute name="selitemtextcolor" default="0x00000000" type="DWORD" comment="item被选中时文本颜色"/>
 		<Attribute name="selhotitemtextcolor" default="0x00000000" type="DWORD" comment="item被选中时且鼠标进入时的文本颜色"/>
 	</TreeNode>
+	<GifAnim parent="Control" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="bkimage" default="" type="STRING" comment="Gif动画图片路径(不支持source等属性设置)"/>
+		<Attribute name="autoplay" default="true" type="BOOL" comment="是否自动播放GIF动画"/>
+		<Attribute name="autosize" default="false" type="BOOL" comment="是否根据图片自动设置控件大小(开启后width和height属性失效)"/>
+	</GifAnim>
 </Controls>

@@ -5,16 +5,13 @@
 #pragma comment(lib, "shlwapi.lib")
 #endif
 
-
-#define WM_SYSTIMER		0x118	// 未公开消息
-
 namespace DuiLib {
 
 /////////////////////////////////////////////////////////////////////////////////////
 //
 //
 
-void UILIB_API DUI__Trace(LPCTSTR pstrFormat, ...)
+void DUILIB_API DUI__Trace(LPCTSTR pstrFormat, ...)
 {
 #ifdef _DEBUG
     TCHAR szBuffer[300] = { 0 };
@@ -387,7 +384,7 @@ void CWindowWnd::CenterWindow()
 	::GetMonitorInfo(::MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST), &oMonitor);
 	rcArea = oMonitor.rcWork;
 
-    if( hWndCenter == NULL )
+	if( hWndCenter == NULL || IsIconic(hWndCenter))
 		rcCenter = rcArea;
 	else
 		::GetWindowRect(hWndCenter, &rcCenter);
@@ -495,7 +492,7 @@ LRESULT CALLBACK CWindowWnd::__ControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
         pThis = static_cast<CWindowWnd*>(lpcs->lpCreateParams);
         ::SetProp(hWnd, _T("WndX"), (HANDLE) pThis);
         pThis->m_hWnd = hWnd;
-    }
+    } 
     else {
         pThis = reinterpret_cast<CWindowWnd*>(::GetProp(hWnd, _T("WndX")));
         if( uMsg == WM_NCDESTROY && pThis != NULL ) {

@@ -13,21 +13,6 @@
 
 using namespace DuiLib;
 
-// #ifdef _DEBUG
-// #   ifdef _UNICODE
-// #       pragma comment(lib, "..\\Lib\\DuiLib_ud.lib")
-// #   else
-// #       pragma comment(lib, "..\\Lib\\DuiLib_d.lib")
-// #   endif
-// #else
-// #   ifdef _UNICODE
-// #       pragma comment(lib, "..\\Lib\\DuiLib_u.lib")
-// #   else
-// #       pragma comment(lib, "..\\Lib\\DuiLib.lib")
-// #   endif
-// #endif
-#pragma comment(lib, "DuiLib.lib")
-
 #define WM_ADDLISTITEM WM_USER + 50
 /*
 * 存放第二列数据
@@ -346,9 +331,9 @@ public:
         if( pt.x >= rcClient.left + rcCaption.left && pt.x < rcClient.right - rcCaption.right \
             && pt.y >= rcCaption.top && pt.y < rcCaption.bottom ) {
                 CControlUI* pControl = static_cast<CControlUI*>(m_pm.FindControl(pt));
-                if( pControl && _tcscmp(pControl->GetClass(), _T("ButtonUI")) != 0 && 
-                    _tcscmp(pControl->GetClass(), _T("OptionUI")) != 0 &&
-                    _tcscmp(pControl->GetClass(), _T("TextUI")) != 0 )
+                if( pControl && _tcscmp(pControl->GetClass(), DUI_CTR_BUTTON) != 0 && 
+                    _tcscmp(pControl->GetClass(), DUI_CTR_OPTION) != 0 &&
+                    _tcscmp(pControl->GetClass(), DUI_CTR_TEXT) != 0 )
                     return HTCAPTION;
         }
 
@@ -460,7 +445,7 @@ private:
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int nCmdShow)
 {
     CPaintManagerUI::SetInstance(hInstance);
-    CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetCurrentPath() + _T("skin"));
+    CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + _T("skin"));
     CPaintManagerUI::SetResourceZip(_T("ListRes.zip"));
 
     ListMainForm* pFrame = new ListMainForm();

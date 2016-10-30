@@ -7,7 +7,7 @@
 
 namespace DuiLib
 {
-	class UILIB_API IWebBrowserUI
+	class DUILIB_API IWebBrowserUI
 	{
 	public:
 		/// ¹¹Ôìº¯Êý

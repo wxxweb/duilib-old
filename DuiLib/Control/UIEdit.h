@@ -7,7 +7,7 @@ namespace DuiLib
 {
 	class CEditWnd;
 
-	class UILIB_API CEditUI : public CLabelUI
+	class DUILIB_API CEditUI : public CLabelUI
 	{
 		friend class CEditWnd;
 	public:
@@ -16,6 +16,7 @@ namespace DuiLib
 		LPCTSTR GetClass() const;
 		LPVOID GetInterface(LPCTSTR pstrName);
 		UINT GetControlFlags() const;
+		HWND GetNativeWindow() const;
 
 		void SetEnabled(bool bEnable = true);
 		void SetText(LPCTSTR pstrText);
@@ -27,9 +28,12 @@ namespace DuiLib
 		bool IsPasswordMode() const;
 		void SetPasswordChar(TCHAR cPasswordChar);
 		TCHAR GetPasswordChar() const;
+		bool IsAutoSelAll();
+		void SetAutoSelAll(bool bAutoSelAll);
 		void SetNumberOnly(bool bNumberOnly);
 		bool IsNumberOnly() const;
 		int GetWindowStyls() const;
+		HWND GetNativeEditHWND() const;
 
 		LPCTSTR GetNormalImage();
 		void SetNormalImage(LPCTSTR pStrImage);
@@ -46,7 +50,8 @@ namespace DuiLib
 		void SetSelAll();
 		void SetReplaceSel(LPCTSTR lpszReplace);
 
-		void SetPos(RECT rc);
+		void SetPos(RECT rc, bool bNeedInvalidate = true);
+		void Move(SIZE szOffset, bool bNeedInvalidate = true);
 		void SetVisible(bool bVisible = true);
 		void SetInternVisible(bool bVisible = true);
 		SIZE EstimateSize(SIZE szAvailable);
@@ -62,14 +67,16 @@ namespace DuiLib
 		UINT m_uMaxChar;
 		bool m_bReadOnly;
 		bool m_bPasswordMode;
+		bool m_bAutoSelAll;
 		TCHAR m_cPasswordChar;
 		UINT m_uButtonState;
-		CDuiString m_sNormalImage;
-		CDuiString m_sHotImage;
-		CDuiString m_sFocusedImage;
-		CDuiString m_sDisabledImage;
 		DWORD m_dwEditbkColor;
 		int m_iWindowStyls;
+
+		TDrawInfo m_diNormal;
+		TDrawInfo m_diHot;
+		TDrawInfo m_diFocused;
+		TDrawInfo m_diDisabled;
 	};
 }
 #endif // __UIEDIT_H__

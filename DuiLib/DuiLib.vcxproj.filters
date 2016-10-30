@@ -2,39 +2,39 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{f00640ad-aa72-4402-9db1-bbef3c96b32c}</UniqueIdentifier>
+      <UniqueIdentifier>{7d17d310-9655-4640-9d72-abb7c0fe0bc6}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Source Files\Utils">
-      <UniqueIdentifier>{e3b4e882-f792-422b-ab0b-3c5e8c377309}</UniqueIdentifier>
+      <UniqueIdentifier>{1e313975-0756-4625-a65a-297ff225ada1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Core">
-      <UniqueIdentifier>{e3fdd8aa-f311-4d11-8d6a-ea3464d00e16}</UniqueIdentifier>
+      <UniqueIdentifier>{f7184c42-483c-41c1-a76d-59a5a9f76ee4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Layout">
-      <UniqueIdentifier>{e347baf7-688d-4412-b360-649b0d936879}</UniqueIdentifier>
+      <UniqueIdentifier>{3e8f088f-a5b6-40e1-8042-40354cc25b8d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Control">
-      <UniqueIdentifier>{fb2e8298-661a-4eaa-8dd5-44c221b3d1ec}</UniqueIdentifier>
+      <UniqueIdentifier>{eaa8f7be-293a-46de-834f-071a9a441a28}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{9e6b51c5-c843-4cc1-85c0-a6b0b85ca6d8}</UniqueIdentifier>
+      <UniqueIdentifier>{44fffdff-1307-447a-873d-d0cc2e94a7ce}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
     <Filter Include="Header Files\Utils">
-      <UniqueIdentifier>{a0d0d74b-13b6-4de4-a50b-4f8e8c2b5874}</UniqueIdentifier>
+      <UniqueIdentifier>{2f0ac3de-1412-4d51-a46c-59a70d45e4b5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Core">
-      <UniqueIdentifier>{c6951932-7246-4ce0-bd66-69a025d1990b}</UniqueIdentifier>
+      <UniqueIdentifier>{f7a96342-a157-41bb-a57d-d283f6a9b11e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Layout">
-      <UniqueIdentifier>{b21e7db3-b429-4eb9-bde8-c96fcb815e2c}</UniqueIdentifier>
+      <UniqueIdentifier>{7e3238a6-3b1f-4c5a-9454-15ebb7dd7290}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Control">
-      <UniqueIdentifier>{6c2cd9d9-bc26-491b-8f32-a7489d5607a1}</UniqueIdentifier>
+      <UniqueIdentifier>{9d25d6fa-9ff9-4ebd-a5a9-20302dd1c58a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{24dedc45-0513-4913-8b14-97816ee17fac}</UniqueIdentifier>
+      <UniqueIdentifier>{c6069066-0c47-4447-90dc-5ca0e3e72cc6}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
   </ItemGroup>
@@ -43,9 +43,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UIlib.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\WinImplBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Utils\stb_image.c">
@@ -108,9 +105,6 @@
     <ClCompile Include="Control\UICombo.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
-    <ClCompile Include="Control\UIComboBox.cpp">
-      <Filter>Source Files\Control</Filter>
-    </ClCompile>
     <ClCompile Include="Control\UIDateTime.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
@@ -141,9 +135,6 @@
     <ClCompile Include="Control\UIText.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
-    <ClCompile Include="Control\UITreeView.cpp">
-      <Filter>Source Files\Control</Filter>
-    </ClCompile>
     <ClCompile Include="Control\UIWebBrowser.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
@@ -155,6 +146,21 @@
     </ClCompile>
     <ClCompile Include="Control\UIWebBrowserIE.cpp">
       <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\WinImplBase.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\UITreeView.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\UIComboBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\WndShadow.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\UIGifAnim.cpp">
+      <Filter>Header Files\Control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -233,9 +239,6 @@
     <ClInclude Include="Control\UICombo.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
-    <ClInclude Include="Control\UIComboBox.h">
-      <Filter>Header Files\Control</Filter>
-    </ClInclude>
     <ClInclude Include="Control\UIDateTime.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
@@ -266,10 +269,10 @@
     <ClInclude Include="Control\UIText.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
-    <ClInclude Include="Control\UITreeView.h">
+    <ClInclude Include="Control\UIWebBrowser.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
-    <ClInclude Include="Control\UIWebBrowser.h">
+    <ClInclude Include="Control\UITreeView.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
     <ClInclude Include="Control\UIImport.h">
@@ -295,6 +298,18 @@
     </ClInclude>
     <ClInclude Include="Utils\WebBrowserEventHandlerIE.h">
       <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Control\UIComboBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\WndShadow.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\stb_image.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Control\UIGifAnim.h">
+      <Filter>Source Files\Control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

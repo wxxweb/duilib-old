@@ -9,7 +9,10 @@ namespace DuiLib {
 
 class CComboWnd;
 
-class UILIB_API CComboUI : public CContainerUI, public IListOwnerUI
+/// 扩展下拉列表框
+/// 增加arrowimage属性,一张图片平均分成5份,Normal/Hot/Pushed/Focused/Disabled(必须有source属性)
+/// <Default name="ComboBox" value="arrowimage=&quot;file='sys_combo_btn.png' source='0,0,16,16'&quot; "/>
+class DUILIB_API CComboUI : public CContainerUI, public IListOwnerUI
 {
     friend class CComboWnd;
 public:
@@ -29,18 +32,25 @@ public:
     SIZE GetDropBoxSize() const;
     void SetDropBoxSize(SIZE szDropBox);
 
-    int GetCurSel() const;  
-    bool SelectItem(int iIndex, bool bTakeFocus = false);
+    int GetCurSel() const;
+	bool GetSelectCloseFlag();
+	void SetSelectCloseFlag(bool flag);
+    bool SelectItem(int iIndex, bool bTakeFocus = false, bool bTriggerEvent=true);
+    bool ExpandItem(int iIndex, bool bExpand = true);
+    int GetExpandedItem() const;
 
-    bool SetItemIndex(CControlUI* pControl, int iIndex);
+    bool SetItemIndex(CControlUI* pControl, int iNewIndex);
+    bool SetMultiItemIndex(CControlUI* pStartControl, int iCount, int iNewStartIndex);
     bool Add(CControlUI* pControl);
     bool AddAt(CControlUI* pControl, int iIndex);
-    bool Remove(CControlUI* pControl);
-    bool RemoveAt(int iIndex);
+    bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
+    bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
     void RemoveAll();
 
     bool Activate();
 
+	bool GetShowText() const;
+	void SetShowText(bool flag);
     RECT GetTextPadding() const;
     void SetTextPadding(RECT rc);
     LPCTSTR GetNormalImage() const;
@@ -55,7 +65,11 @@ public:
     void SetDisabledImage(LPCTSTR pStrImage);
 
     TListInfoUI* GetListInfo();
+    UINT GetItemFixedHeight();
+    void SetItemFixedHeight(UINT nHeight);
+    int GetItemFont(int index);
     void SetItemFont(int index);
+    UINT GetItemTextStyle();
     void SetItemTextStyle(UINT uStyle);
 	RECT GetItemTextPadding() const;
     void SetItemTextPadding(RECT rc);
@@ -85,17 +99,26 @@ public:
     void SetDisabledItemBkColor(DWORD dwBkColor);
 	LPCTSTR GetDisabledItemImage() const;
     void SetDisabledItemImage(LPCTSTR pStrImage);
-	DWORD GetItemLineColor() const;
-    void SetItemLineColor(DWORD dwLineColor);
+	LPCTSTR GetArrowImage() const;
+	void SetArrowImage(LPCTSTR pStrImage);
+    int GetItemHLineSize() const;
+    void SetItemHLineSize(int iSize);
+    DWORD GetItemHLineColor() const;
+    void SetItemHLineColor(DWORD dwLineColor);
+    int GetItemVLineSize() const;
+    void SetItemVLineSize(int iSize);
+	DWORD GetItemVLineColor() const;
+    void SetItemVLineColor(DWORD dwLineColor);
     bool IsItemShowHtml();
     void SetItemShowHtml(bool bShowHtml = true);
 
     SIZE EstimateSize(SIZE szAvailable);
-    void SetPos(RECT rc);
+	void SetPos(RECT rc, bool bNeedInvalidate = true);
+	void Move(SIZE szOffset, bool bNeedInvalidate = true);
     void DoEvent(TEventUI& event);
     void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
     
-    void DoPaint(HDC hDC, const RECT& rcPaint);
+    bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
     void PaintText(HDC hDC);
     void PaintStatusImage(HDC hDC);
 
@@ -103,16 +126,20 @@ protected:
     CComboWnd* m_pWindow;
 
     int m_iCurSel;
+	int m_nArrowWidth;
+	bool m_bShowText;
+	bool m_bSelectCloseFlag;
     RECT m_rcTextPadding;
+	CDuiString m_sArrowImage;
     CDuiString m_sDropBoxAttributes;
     SIZE m_szDropBox;
     UINT m_uButtonState;
 
-    CDuiString m_sNormalImage;
-    CDuiString m_sHotImage;
-    CDuiString m_sPushedImage;
-    CDuiString m_sFocusedImage;
-    CDuiString m_sDisabledImage;
+	TDrawInfo m_diNormal;
+    TDrawInfo m_diHot;
+    TDrawInfo m_diPushed;
+    TDrawInfo m_diFocused;
+    TDrawInfo m_diDisabled;
 
     TListInfoUI m_ListInfo;
 };

@@ -16,9 +16,9 @@ namespace DuiLib
 	LPVOID CComboBoxUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcscmp(pstrName, DUI_CTR_COMBOBOX) == 0 ) return static_cast<CComboBoxUI*>(this);
-		if( _tcscmp(pstrName, DUI_CTR_COMBO) == 0 ) return static_cast<CComboUI*>(this);
-		if( _tcscmp(pstrName, _T("IListOwner")) == 0 ) return static_cast<IListOwnerUI*>(this);
-		return CContainerUI::GetInterface(pstrName);
+		if( _tcscmp(pstrName, DUI_CTR_ILISTOWNER) == 0 ) return static_cast<IListOwnerUI*>(this);
+	    if( _tcscmp(pstrName, DUI_CTR_COMBO) == 0 ) return static_cast<CComboUI*>(this);
+        return CContainerUI::GetInterface(pstrName);
 	}
 
 	void CComboBoxUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
@@ -72,7 +72,7 @@ namespace DuiLib
 			rcBmpPart.right = rcBmpPart.left + m_nArrowWidth;
 
 			CDuiRect rcDest(0, 0, m_rcItem.right - m_rcItem.left, m_rcItem.bottom - m_rcItem.top);
-			rcDest.Deflate(GetBorderSize(), GetBorderSize());
+			rcDest.Deflate(GetBorderSize().left, GetBorderSize().top);
 			rcDest.left = rcDest.right - m_nArrowWidth;
 
 			CDuiString sSource = sModify.Mid(nPos1, nPos3 + 1 - nPos1);
@@ -82,10 +82,13 @@ namespace DuiLib
 				rcDest.left, rcDest.top, rcDest.right, rcDest.bottom);
 
 			sModify.Replace(sSource, sReplace);
+			TDrawInfo drawInfo(sModify);
+			drawInfo.sImageName = m_sArrowImage;
 
 			// draw image
-			if (!DrawImage(hDC, m_sArrowImage, sModify))
-				m_sNormalImage.Empty();
+			DrawImage(hDC, drawInfo);
+// 			if (!DrawImage(hDC, drawInfo))
+// 				m_sNormalImage.Empty();
 		}
 	}
 
@@ -108,7 +111,7 @@ namespace DuiLib
 			else {
 				RECT rcOldPos = pControl->GetPos();
 				pControl->SetPos(rcText);
-				pControl->DoPaint(hDC, rcText);
+				pControl->DoPaint(hDC, rcText, NULL);
 				pControl->SetPos(rcOldPos);
 			}
 		}

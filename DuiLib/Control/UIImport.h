@@ -5,7 +5,7 @@
 
 namespace DuiLib
 {
-	class UILIB_API CImportUI : public CControlUI
+	class DUILIB_API CImportUI : public CControlUI
 	{
 	public:
 		CImportUI();

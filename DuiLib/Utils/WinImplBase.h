@@ -12,7 +12,7 @@ namespace DuiLib
 		UILIB_ZIPRESOURCE,	// 来自资源的zip压缩包
 	};
 
-	class UILIB_API WindowImplBase
+	class DUILIB_API WindowImplBase
 		: public CWindowWnd
 		, public CNotifyPump
 		, public INotifyUI
@@ -25,9 +25,9 @@ namespace DuiLib
 		virtual void InitWindow(){};
 		virtual void OnFinalMessage( HWND hWnd );
 		virtual void Notify(TNotifyUI& msg);
-		virtual void OnClick(DuiLib::TNotifyUI& msg);
 
 		DUI_DECLARE_MESSAGE_MAP()
+		virtual void OnClick(TNotifyUI& msg);
 
 	protected:
 		virtual CDuiString GetSkinFolder() = 0;
