@@ -248,6 +248,7 @@ CDuiString CPaintManagerUI::GetCurrentPath()
 {
     TCHAR tszModule[MAX_PATH + 1] = { 0 };
     ::GetCurrentDirectory(MAX_PATH, tszModule);
+	_tcscat_s(tszModule, "\\");
     return tszModule;
 }
 
