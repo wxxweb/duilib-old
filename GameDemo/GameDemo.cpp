@@ -616,10 +616,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*l
 {
     CPaintManagerUI::SetInstance(hInstance);
 #if 0
-    CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + _T("skin"));
+    CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetCurrentPath() + _T("skin"));
     CPaintManagerUI::SetResourceZip(_T("GameRes.zip"));
 #else
-	CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + _T("skin/GameRes"));
+	CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetCurrentPath() + _T("skin/GameRes"));
 #endif
 
     HRESULT Hr = ::CoInitialize(NULL);

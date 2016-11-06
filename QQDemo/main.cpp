@@ -31,7 +31,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 #endif
 {
     CPaintManagerUI::SetInstance(hInstance);
-    CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath());
+    CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetCurrentPath());
 
 	HINSTANCE hInstRich = ::LoadLibrary(_T("Riched20.dll"));
 
