@@ -33,7 +33,7 @@ namespace DuiLib
 		virtual bool OnLoadError(
 			/* [out] */ TSTDSTR& _error_text,
 			/* [in] */ const TSTDSTR& _failed_url,
-			/* [in] */ DWORD _error_code
+			/* [in] */ CefErrorCode _error_code
 			);
 		virtual void OnNavStateChange(
 			const TSTDSTR& _url,
@@ -42,9 +42,10 @@ namespace DuiLib
 			);
 		virtual void OnAddressChange(const TSTDSTR& _url);
 		virtual bool OnJsInvoke(LPCTSTR _fn_name, LPCTSTR _args);
-		virtual void OnConsoleMessage(const TSTDSTR& _msg);
+//		virtual void OnConsoleMessage(const TSTDSTR& _msg);
 		virtual void OnUncaughtException(
 			const TSTDSTR& _msg,
+			const TSTDSTR& _stack_trace,
 			const TSTDSTR& _file_name,
 			const TSTDSTR& _src_line,
 			int _line_num,

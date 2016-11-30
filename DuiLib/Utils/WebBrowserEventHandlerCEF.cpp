@@ -63,7 +63,7 @@ void CWebBrowserEventHandlerCEF::OnLoadEnd(const TSTDSTR& _url, bool _is_main)
 bool CWebBrowserEventHandlerCEF::OnLoadError(
 	/* [out] */ TSTDSTR& _error_text,
 	/* [in] */ const TSTDSTR& _failed_url,
-	/* [in] */ DWORD _error_code
+	/* [in] */ CefErrorCode _error_code
 	)
 {
 	return false;
@@ -89,12 +89,13 @@ bool CWebBrowserEventHandlerCEF::OnJsInvoke(
 { return false; }
 
 
-void CWebBrowserEventHandlerCEF::OnConsoleMessage(const TSTDSTR& _msg)
-{}
+// void CWebBrowserEventHandlerCEF::OnConsoleMessage(const TSTDSTR& _msg)
+// {}
 
 
 void CWebBrowserEventHandlerCEF::OnUncaughtException(
 	const TSTDSTR& _msg,
+	const TSTDSTR& _stack_trace,
 	const TSTDSTR& _file_name,
 	const TSTDSTR& _src_line,
 	int _line_num,
