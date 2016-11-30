@@ -57,7 +57,7 @@ public:
 	virtual bool OnLoadError(
 		/* [out] */ TSTDSTR& _error_text,
 		/* [in] */ const TSTDSTR& _failed_url,
-		/* [in] */ DWORD _error_code
+		/* [in] */ CefErrorCode _error_code
 		)
 	{
 		if (NULL == m_pImpl) { return false; }
@@ -89,14 +89,15 @@ public:
 		return m_pImpl->OnJsInvoke(_fn_name, _args);
 	}
 
-	virtual void OnConsoleMessage(const TSTDSTR& _msg)
-	{
-		if (NULL == m_pImpl) { return; }
-		m_pImpl->OnConsoleMessage(_msg);
-	}
+// 	virtual void OnConsoleMessage(const TSTDSTR& _msg)
+// 	{
+// 		if (NULL == m_pImpl) { return; }
+// 		m_pImpl->OnConsoleMessage(_msg);
+// 	}
 	
 	virtual void OnUncaughtException(
 		const TSTDSTR& _msg,
+		const TSTDSTR& _stack_trace,
 		const TSTDSTR& _file_name,
 		const TSTDSTR& _src_line,
 		int _line_num,
@@ -104,7 +105,7 @@ public:
 		)
 	{
 		if (NULL == m_pImpl) { return; }
-		m_pImpl->OnUncaughtException(_msg, _file_name, _src_line, _line_num, _column);
+		m_pImpl->OnUncaughtException(_msg, _stack_trace, _file_name, _src_line, _line_num, _column);
 	}
 
 public:
@@ -146,8 +147,8 @@ public:
 
 	void Init(CWebBrowserCefUI* pOwner);
 
-	LPCTSTR GetWindowClassName() const;
-	void OnFinalMessage(HWND hWnd);
+	virtual LPCTSTR GetWindowClassName() const;
+	virtual void OnFinalMessage(HWND hWnd);
 
 protected:
 	CWebBrowserCefUI* m_pOwner;
@@ -165,6 +166,7 @@ void CCefWebBrowserWnd::Init(CWebBrowserCefUI* pOwner)
 	RECT rcPos = m_pOwner->GetPos();
 	this->Create(m_pOwner->GetManager()->GetPaintWindow(),
 		TEXT("CefWebBrowserWnd"), UI_WNDSTYLE_CHILD, WS_EX_TOOLWINDOW, rcPos);
+	::SetClassLong(m_hWnd, GCL_HBRBACKGROUND, (LONG)::GetStockObject(WHITE_BRUSH));
 	m_bInit = true;
 }
 
